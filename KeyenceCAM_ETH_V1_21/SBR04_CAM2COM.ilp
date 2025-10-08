@@ -1,0 +1,110 @@
+(*2*)
+(* Network 0 *)
+(*Keyence kamera kommunikációs rutin.Kiolvassa a kamerából az eredményértéket, és abírálati számot, majd továbbítja visszatérõ értékként.RESULT:RT,aaaaa,bb,cc,dd,eeeeeee<Cr>aaaaa - bírálat számbb - total status (OK/NG)cc - tool Nr.dd - tool status (OK/NG)eeeeeee - countCAM Setup komm. puffer: VB2100 , méret:10byte, Üzenet hossz (LEN): VW2120RESULT puffer: VB2130, méret: 30byte, Üzenet hossz (LEN)LEN:VW2160*)
+LD    %SM0.0
+ST   %BR0.0
+(* Network 1 *)
+LD    %SM0.1
+MOVE    DI#0, _JUDGENR
+MOVE    0, _RESULT
+(* Network 2 *)
+LD    %SM0.0
+ETH_STATUS    ETHLINE    TCPCONN    TCPSERV    UDPPEERS
+MOVE    DW#2, TPCONN0
+AND    TCPCONN, TPCONN0
+EQ    DW#2, TPCONN0
+S    CLIENT
+(* Network 3 *)
+(*CABLE CONNECTED*)
+LD    ETHLINE
+ST   %M51.4
+(* Network 4 *)
+(*Kliens Nr.0 ONLINE*)
+LD    CLIENT
+ST   %M51.5
+(* Network 5 *)
+(*KAMERA AUTOMATA SEND Bekapcsolva*)
+LD    SETCAMPKG
+AND    CLIENT
+ST   %M51.6
+ST   ONLINE
+(* Network 6 *)
+LD    LEDON
+ST   %M51.7
+(* Network 7 *)
+(*Ha ETH vonal él, de nincs cliens kapcsolat a szerverhez*)
+LD    ETHLINE
+ANDN    CLIENT
+R_TRIG
+S    STARTCLIENT
+(* Network 8 *)
+(*Kliens Csatlakoztatása*)
+LD    %SM0.0
+TCP_CLIENT    STARTCLIENT, 1, 192.168.0.4, W#8000, 2000, CLIENTRES, CLIENTGOOD
+R    STARTCLIENT
+(* Network 9 *)
+LD    %L24.7
+MOVE    B#2#10000011, _CLIENTRESFILTERED
+AND    CLIENTRES, _CLIENTRESFILTERED
+EQ    B#2#10000011, _CLIENTRESFILTERED
+TON   T25, 10
+__CR_EQ_1
+MOVE    T25, time22
+__CR_RESTORE
+S    STARTCLIENT
+(* Network 10 *)
+LD    CLIENT
+R_TRIG
+S    SETCAM
+(* Network 11 *)
+(*CSATLAKOZÁS UTÁN KAMERA AUTOMATA KÜLDÉSRE ÁLLÍTÁSA*)
+LD    %SM0.0
+TCPC_XMTRCV    SETCAM, 1, C_CAMSET, 5, 10, 1000, 1, SETCAMRES, SETCAMPKG, %VB2100, %VW2120
+R    SETCAM
+(* Network 12 *)
+LD    %SM0.0
+MOVE    B#2#10000011, FILTEREDRES
+AND    SETCAMRES, FILTEREDRES
+(* Network 13 *)
+(*Ha nem érkezik válasz, az OE,1 utasításra, akkor újra próbálkozik*)
+LD    %SM0.0
+EQ    B#2#10000011, FILTEREDRES
+R_TRIG
+S    SETCAM
+(* Network 14 *)
+(*Ha OE,1-re jön válasz, akkor megvizsgálja, hogy OE<Cr>-e, és csak ezután megy folyamatosan fogadó állapotba a TCP kliens*)
+LD    %SM0.0
+EQ    B#2#10000000, FILTEREDRES
+MOVE    &VB2100, %VD5000
+MOVE    &VB1005, %VD5004
+CAL    SBR00    %VD5000, %VD5004, 3, SETCAMOK
+(* Network 15 *)
+LD    SETCAMOK
+R_TRIG
+S    EXECRCV
+(* Network 16 *)
+LD    %SM0.0
+TCPC_RCV    EXECRCV, 1, 40, 0, RCVRES, NEWPKG, PUFF_C2, %VW2160
+(* Network 17 *)
+LD    NEWPKG
+R_TRIG
+EQ    PUFF_C2, B#82
+MOVE    &VB2137, CONVP
+CAL    SBR03    5, CONVP, _JUDGENR
+B_TO_I    %VB2154, _RESULT
+SUB    48, _RESULT
+R    _ERROR
+(* Network 18 *)
+LD    NEWPKG
+R_TRIG
+NE    PUFF_C2, B#82
+BLKMOVE  PUFF_C2, ERRORMSG, B#7
+S    _ERROR
+(* Network 19 *)
+LD    NEWPKG
+R_TRIG
+TOF   T26, 1
+__CR_EQ_1
+MOVE    T26, t26timer
+__CR_RESTORE
+ST   LEDON

@@ -1,0 +1,16 @@
+VAR
+    DONE  AT  %L45.0 : BOOL ; (*  *) 
+    ERR  AT  %L45.1 : BOOL ; (*  *) 
+    ERRID  AT  %LB133 : BYTE ; (*  *) 
+    TMR30  AT  %LW134 : INT ; (*  *) 
+    HOMET  AT  %L45.2 : BOOL ; (* homet *) 
+    IN_homing  AT  %L45.3 : BOOL ; (*  *) 
+    IN_findhome  AT  %L45.4 : BOOL ; (*  *) 
+    IN_jogtoorigin  AT  %L45.5 : BOOL ; (*  *) 
+    FIN_findhome  AT  %L45.6 : BOOL ; (*  *) 
+    FIN_jogtoorigin  AT  %L45.7 : BOOL ; (*  *) 
+    exec  AT  %L112.7 : BOOL ; (*  *) 
+    DONE2  AT  %L132.3 : BOOL ; (*  *) 
+    ERR2  AT  %L132.4 : BOOL ; (*  *) 
+    ERRID2  AT  %LB136 : BYTE ; (*  *) 
+END_VAR

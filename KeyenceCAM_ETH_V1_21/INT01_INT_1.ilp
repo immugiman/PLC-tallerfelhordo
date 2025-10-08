@@ -1,0 +1,4 @@
+(*2*)
+(* Network 0 *)
+LD    %M50.3
+INC    t_int_time

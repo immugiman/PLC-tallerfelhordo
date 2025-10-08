@@ -1,0 +1,122 @@
+(*2*)
+(* Network 0 *)
+(*Keyence kamera kommunikációs rutin.Kiolvassa a kamerából az eredményértéket, és abírálati számot, majd továbbítja visszatérõ értékként.RESULT:RT,aaaaa,bb,cc,dd,eeeeeee<Cr>aaaaa - bírálat számbb - total status (OK/NG)cc - tool Nr.dd - tool status (OK/NG)eeeeeee - countCAM Setup komm. puffer: VB2000 , méret:10byte, Üzenet hossz (LEN): VW2020RESULT puffer: VB2030, méret: 30byte, Üzenet hossz (LEN)LEN:VW2060*)
+LD    %SM0.0
+ST   %BR0.0
+(* Network 1 *)
+LD    %SM0.1
+MOVE    DI#0, _JUDGENR
+MOVE    0, _RESULT
+(* Network 2 *)
+LD    %SM0.0
+ETH_STATUS    ETHLINE    TCPCONN    TCPSERV    UDPPEERS
+MOVE    DW#1, CLIENT0UP
+AND    TCPCONN, CLIENT0UP
+(* Network 3 *)
+LD    %SM0.0
+EQ    DW#1, CLIENT0UP
+ST   CLIENT
+(* Network 4 *)
+(*Ha ETH vonal él, de nincs cliens kapcsolat a szerverhez*)
+LD    ETHLINE
+ANDN    CLIENT
+ST   CLICONN
+(* Network 5 *)
+LD    CLICONN
+ANDN    T22
+TON   T22, 25
+__CR_EQ_1
+MOVE    T22, time22
+__CR_RESTORE
+S    STARTCLIENT
+(* Network 6 *)
+(*Kliens Csatlakoztatása*)
+LD    CLICONN
+OR    CLIENT
+TCP_CLIENT    STARTCLIENT, 0, 192.168.0.3, W#8000, 2000, CLIENTRES, CLIENTGOOD
+R    STARTCLIENT
+(* Network 7 *)
+LD    CLIENT
+R_TRIG
+R    SETCAMOK
+(* Network 8 *)
+LD    CLIENT
+R_TRIG
+OR(
+LD    IN_MODSET
+ANDN    SETCAMOK
+)
+ST   IN_MODSET
+(* Network 9 *)
+LD    SETCAMOK
+R_TRIG
+OR(
+LD    MODSET_OK
+AND    CLIENT
+)
+ST   MODSET_OK
+(* Network 10 *)
+LD    IN_MODSET
+TON   T27, 5
+S    SETCAM
+(* Network 11 *)
+(*CSATLAKOZÁS UTÁN KAMERA AUTOMATA KÜLDÉSRE ÁLLÍTÁSA*)
+LD    IN_MODSET
+TCPC_XMTRCV    SETCAM, 0, C_CAMSET, 5, 10, 1000, 1, SETCAMRES, SETCAMPKG, PUFF_CAMSETREP, %VW2020
+R    SETCAM
+(* Network 12 *)
+(*Ha OE,1-re jön válasz, akkor megvizsgálja, hogy OE<Cr>-e, és csak ezután megy folyamatosan fogadó állapotba a TCP kliens*)
+LD    IN_MODSET
+AND    %L25.7
+MOVE    &VB2000, %VD5000
+MOVE    &VB1005, %VD5004
+CAL    SBR00    %VD5000, %VD5004, 3, SETCAMOK
+(* Network 13 *)
+LD    MODSET_OK
+R_TRIG
+S    EXECRCV
+(* Network 14 *)
+LD    %SM0.0
+TCPC_RCV    EXECRCV, 0, 40, 0, RCVRES, NEWPKG, PUFF_CAMRESULT, %VW2060
+(* Network 15 *)
+(*Ha a csomag egy result adatait tartalmazza*)
+LD    NEWPKG
+R_TRIG
+EQ    PUFF_CAMRESULT, B#82
+MOVE    &VB2037, CONVP
+CAL    SBR03    5, CONVP, _JUDGENR
+B_TO_I    %VB2054, _RESULT
+SUB    48, _RESULT
+R    _ERROR
+(* Network 16 *)
+(*Ha nem egy result jött, akkor hiba lesz valószínûleg, és ezt a hibakódot kimásolom késõbbi feldolgozásra*)
+LD    NEWPKG
+R_TRIG
+NE    PUFF_CAMRESULT, B#82
+BLKMOVE  PUFF_CAMRESULT, ERRORMSG, B#7
+S    _ERROR
+(* Network 17 *)
+LD    NEWPKG
+R_TRIG
+TOF   T21, 1
+__CR_EQ_1
+MOVE    T21, t21timer
+__CR_RESTORE
+ST   LEDON
+(* Network 18 *)
+(*CABLE CONNECTED*)
+LD    ETHLINE
+ST   %M51.0
+(* Network 19 *)
+(*Kliens Nr.0 ONLINE*)
+LD    CLIENT
+ST   %M51.1
+(* Network 20 *)
+(*KAMERA AUTOMATA SEND Bekapcsolva*)
+LD    MODSET_OK
+AND    CLIENT
+ST   %M51.2
+ST   ONLINE
+(* Network 21 *)
+LD    LEDON
+ST   %M51.3

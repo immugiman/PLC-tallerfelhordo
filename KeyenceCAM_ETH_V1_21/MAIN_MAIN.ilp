@@ -1,0 +1,344 @@
+(*2*)
+(* Network 0 *)
+(*Védett memóriatartományok:VD5000 - VD5007 CMPBLK részére foglalvaVD2536, VD2540 PINTER-ek*)
+LD    %SM0.1
+MOVE    0, NULL
+MOVE    10, _INT
+MOVE    DI#0, _DINT
+FIFO_INIT
+MOVE    DI#10, %SMD16
+ATCH    INT01, 4
+(* Network 1 *)
+LD    %SM0.1
+MOVE    &VW400, ptrdb
+MOVE    &VW500, ptrfifo
+(* Network 2 *)
+(*MODBUS rutin*)
+LD    TRUE
+CAL    SBR07
+(* Network 3 *)
+LD    TRUE
+CAL    SBR01    _CAM1RES, _CAM1JNR, _CAM1ONLINE, _CAMERROR
+(* Network 4 *)
+LD    TRUE
+CAL    SBR04    _CAM2ERROR, _CAM2RES, _CAM2JNR, _CAM2ONLINE
+(* Network 5 *)
+(*SPIRÁL MOTOR VEZÉRLÉSE*)
+LD    TRUE
+CAL    SBR06
+(* Network 6 *)
+(*Automatikus trigger idõzítõje, a HMI-n beállított ciklusidõvelTeszteléshez*)
+LDN    T5
+TON   T5, %VW30
+(* Network 7 *)
+(*Válaszídõ számláló indítása*)
+LD    %I0.3
+AND    %I1.3
+AND    %M20.0
+TON   T1, 10000
+__CR_EQ_1
+MOVE    T1, PROCTimer
+__CR_RESTORE
+ST   %BR0.0
+(* Network 8 *)
+(*Minden második triggerre fotózunk*)
+LD    %I0.4
+CTU   C1, C1, 2
+__CR_EQ_1
+MOVE    C1, count
+__CR_RESTORE
+ST   %BR0.0
+(* Network 9 *)
+(*Trigger feltételek, és fotózás indítása a kamerák trigger bemenetének aktiválása*)
+LD    %I0.3
+AND    %I1.3
+AND    _CAM1ONLINE
+AND    _CAM2ONLINE
+ANDN    %I0.2
+ANDN    %I1.2
+ANDN    %M10.1
+AND(
+LD    T11
+ORN    %M20.0
+)
+AND(
+LD    %M10.0
+OR    C1
+OR(
+LD    %M20.1
+AND    T5
+)
+)
+R_TRIG
+R    _CAMTRIGGERED
+ST   _OTRIG
+S    %M20.0
+(* Network 10 *)
+(*Trigger kimenet a kamera felé kitartva 10ms-ig*)
+LD    _OTRIG
+TOF   T12, 1
+__CR_EQ_1
+MOVE    T12, trigkitart
+__CR_RESTORE
+ST   %Q1.0
+ST   %Q1.2
+(* Network 11 *)
+(*Ha a kamera leáll valami miatt, akkor az újraindítás utána a COMMTIME törölve lesz, hogy ne ragadjon be a kiértékelés*)
+LD    %I0.3
+AND    %I1.3
+R_TRIG
+R    %M20.0
+(* Network 12 *)
+(*Trigger jel kimaszkolása, ha 180ms-on belül érkezne újabbElõzõ trigger óta eltelt idõ mentése regiszterbe*)
+LD    %M20.0
+AND(
+LD    TRUE
+TON   T11, TMASKTIME
+__CR_EQ_1
+MOVE    T11, masktimer
+__CR_RESTORE
+OR(
+LD    TRUE
+R_TRIG
+MOVE    Time_TRIG, %VW306
+MUL    W#10, %VW306
+)
+)
+(* Network 13 *)
+(*Kamera triggerelés után, amennyiben 100ms-on belül nem vált magasra a BUSY jel,akkor feltételezhetõ, hogy a kamera nem kapta meg a trigger jelet.*)
+LD    %I0.2
+AND    %I1.2
+R_TRIG
+S    %M31.4
+(* Network 14 *)
+(*Kamera triggerelés után, amennyiben 100ms-on belül nem vált magasra a BUSY jel,akkor feltételezhetõ, hogy a kamera nem kapta meg a trigger jelet.*)
+LDN    %M31.4
+AND    %M20.0
+GT    PROCTimer, 100
+R_TRIG
+INC    TRIGTOUT
+(* Network 15 *)
+(*Triggerek közt eltelt idõ számolása*)
+LDN    %Q1.0
+TON   T6, 1000
+__CR_EQ_1
+MOVE    T6, Time_TRIG
+__CR_RESTORE
+ST   %BR0.0
+(* Network 16 *)
+(*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.Network 15, 16, 17, 18 A kamerák eredményeit dolgozzák fel, és a pufferba helyezik sorrendben:1. kamera, 2. kamera*)
+LDN    _CAMERROR
+NE    _CAM1_LASTNR, _CAM1JNR
+MOVE    _CAM1JNR, _CAM1_LASTNR
+MOVE    _CAM1JNR, CAM1JNR
+MOVE    _CAM1RES, CAM1RES
+ADD    _CAM1RES, SUMCOUNT
+MOVE    PROCTimer, Time_TOTAL
+R_TRIG
+S    %M31.1
+(* Network 17 *)
+(*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.*)
+LDN    _CAM2ERROR
+NE    _CAM2_LASTNR, _CAM2JNR
+MOVE    _CAM2JNR, _CAM2_LASTNR
+MOVE    _CAM2JNR, CAM2JNR
+MOVE    _CAM2RES, CAM2RES
+ADD    _CAM2RES, SUMCOUNT
+MOVE    PROCTimer, Time_TOTAL
+R_TRIG
+S    %M31.2
+(* Network 18 *)
+LD    %M31.1
+R_TRIG
+AND(
+LD    TRUE
+GT    _CAM1RES, 0
+FIFO_SIZE    _FIFOSIZE
+MOVE    _FIFOSIZE, *VD5016
+MOVE    _CAM1RES, *VD5012
+ADD    DW#2, ptrfifo
+ADD    DW#2, ptrdb
+FIFO_PUSH    _CAM1RES
+OR(
+LD    TRUE
+EQ    _CAM1RES, 0
+)
+)
+R    %M31.1
+S    %M31.3
+(* Network 19 *)
+(*A veremben a sorrend megtartása miatt, a 2-es kamera csak az egyes után tolhatja be az értéket*)
+LD    %M31.3
+AND    %M31.2
+R_TRIG
+AND(
+LD    TRUE
+GT    _CAM2RES, 0
+FIFO_SIZE    _FIFOSIZE
+MOVE    _FIFOSIZE, *VD5016
+MOVE    _CAM2RES, *VD5012
+ADD    DW#2, ptrfifo
+ADD    DW#2, ptrdb
+FIFO_PUSH    _CAM2RES
+OR(
+LD    TRUE
+EQ    _CAM2RES, 0
+)
+)
+R    %M31.2
+R    %M31.3
+R    %M20.0
+(* Network 20 *)
+LD    %SM0.0
+FIFO_SIZE    _FIFOSIZE
+FIFO_SIZE    FIFO
+AND(
+LD    %SM0.0
+GT    _FIFOSIZE, MAXFIFO
+MOVE    _FIFOSIZE, MAXFIFO
+OR(
+LDN    %SM0.0
+GT    _FIFOSIZE, 7
+MOVE    0, MAXFIFO
+FIFO_INIT
+)
+)
+(* Network 21 *)
+(*##### ÁTVÉTEL A SÍMA SZALAGRA #####*)
+LD    %M30.3
+MOVE    _FIFOSIZE, _FIFOS
+AND(
+LD    TRUE
+GT    _FIFOSIZE, 0
+MOVE    _FIFOSIZE, *VD5016
+FIFO_POP    1, ATADO, _POPSIZE
+MOVE    ATADO, *VD5012
+MUL    I#-1, *VD5012
+ADD    DW#2, ptrfifo
+ADD    DW#2, ptrdb
+OR(
+LD    TRUE
+EQ    _FIFOS, 0
+MOVE    10, ATADO
+)
+)
+S    %M53.4
+(* Network 22 *)
+LD    %M53.5
+F_TRIG
+MOVE    csomhossz, utolsohossz
+MOVE    I#0, csomhossz
+GT    utolsohossz, maxhossz
+INC    tulmeretesek
+(* Network 23 *)
+(*##### LEDOBÁS SPIRÁLBA #####Itt azt is ellenõrizhetjük, hogy az utolsó elem valóban elérhette az spirál érzékelõjét.*)
+LD    %M52.0
+AND    %M35.5
+MOVE    SPIRALON, LEDOBVA
+MOVE    ÁTADNIVALO, SPIRALON
+MOVE    I#0, ÁTADNIVALO
+R    %M35.5
+(* Network 24 *)
+(*AUTOMATA üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
+LD    %M200.0
+AND    %M52.0
+MOVE    SUMOUT, KONTROLL
+ADD    LEDOBVA, KONTROLL
+GT    KONTROLL, IGÉNY
+OR(
+LD    %M200.0
+AND    %M300.0
+ANDN    %M200.3
+)
+ST   %M300.0
+(* Network 25 *)
+LD    %M300.0
+ST   %M100.3
+(* Network 26 *)
+LD    %M52.0
+AND(
+LDN    %M300.0
+ADD    LEDOBVA, SUMOUT
+OR(
+LD    %M300.0
+ADD    LEDOBVA, BLENDEN
+)
+)
+(* Network 27 *)
+LD    %M200.0
+ANDN    %M52.0
+AND    %M200.3
+R_TRIG
+MOVE    BLENDEN, SUMOUT
+MOVE    0, BLENDEN
+(* Network 28 *)
+LD    %M200.0
+AND    %M200.4
+GT    BLENDEN, 10
+ST   %M200.5
+(* Network 29 *)
+(*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
+LD    %M30.4
+R_TRIG
+S    %M30.6
+R    %M30.4
+(* Network 30 *)
+(*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
+LD    %M30.6
+TON   T24, 1
+__CR_EQ_1
+MOVE    T24, blowtimer
+__CR_RESTORE
+R    %M30.6
+(* Network 31 *)
+(*Minden nulláz*)
+LD    %M50.5
+R_TRIG
+MOVE    0, SPIRALON
+MOVE    0, BLENDEN
+ST   %M30.1
+S    %M31.6
+(* Network 32 *)
+(*Tallér összesítõ nullázása*)
+LD    %M30.1
+MOVE    0, SUMCOUNT
+MOVE    0, SUMOUT
+(* Network 33 *)
+LD    %SM0.0
+MOVE    &VW458, %VD460
+GT    ptrdb, %VD460
+OR    %M50.5
+ST   %M50.6
+(* Network 34 *)
+(*Kamera bírálatok történetének törlése*)
+LD    %M50.2
+OR    %M50.6
+R_TRIG
+FILL  B#0, %VB500, B#60
+FILL  B#0, %VB400, B#60
+MOVE    &VW400, ptrdb
+MOVE    &VW500, ptrfifo
+(* Network 35 *)
+(*Felsõ szalag puffer és elemszám törlés HMI-rõl*)
+LD    %M30.2
+FILL  B#0, %VB2500, B#10
+FILL  B#0, %VB2520, B#10
+MOVE    0, FIFO_ELEMEK
+(* Network 36 *)
+LD    %M31.0
+MOVE    0, TRIGTOUT
+(* Network 37 *)
+LD    %M31.5
+R_TRIG
+FIFO_INIT
+(* Network 38 *)
+LD    %M53.0
+MOVE    0, campush
+MOVE    0, pushpush
+MOVE    0, spinpop
+(* Network 39 *)
+LD    %SM0.0
+MOVE    %SMB6, scantime
+(* Network 40 *)
+LD    TRUE
+CAL    SBR08

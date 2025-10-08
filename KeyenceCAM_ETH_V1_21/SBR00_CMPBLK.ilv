@@ -1,0 +1,11 @@
+VAR_INPUT
+    _PTR1  AT  %LD70 : DWORD ; (* 1. memóriaterületre mutató pointer *) 
+    _PTR2  AT  %LD74 : DWORD ; (* 2. memóriaterületre mutató pointer *) 
+    _COUNT  AT  %LW2 : INT ; (* byte-ok száma *) 
+END_VAR
+VAR_OUTPUT
+    _EQUAL  AT  %L0.0 : BOOL ; (* Egyezik: TRUE, Nem egyezik: FALSE *) 
+END_VAR
+VAR
+    _IDX  AT  %LW18 : INT ; (* For ciklus index változó *) 
+END_VAR

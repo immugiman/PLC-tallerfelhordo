@@ -1,0 +1,100 @@
+(*2*)
+(* Network 0 *)
+(*Nincs iránykimenet, Q0.2 így általános kimenetként mûködik*)
+LD    %SM0.1
+S    %SM201.3
+S    %M31.6
+(* Network 1 *)
+LD    TRUE
+PREL    0, MOTSTART, %VW250, %VD252, %VW256, %VD258, %M31.7, %M32.1, %MB33
+(* Network 2 *)
+(*Automata pörgetés teszteléshez, HMI-rõl aktiválva*)
+LDN    T13
+TON   T13, spintime
+__CR_EQ_1
+MOVE    T13, %VW364
+__CR_RESTORE
+ST   %BR0.0
+(* Network 3 *)
+(*Automata pörgetés teszteléshez, HMI-rõl aktiválva*)
+LD    %M35.0
+AND    T13
+OR(
+LD    %M150.0
+R_TRIG
+)
+S    %M31.6
+(* Network 4 *)
+LD    %M31.7
+R_TRIG
+AND    %M31.6
+R    %M31.6
+(* Network 5 *)
+(*Forgás közben érkezett indítások számlálása*)
+LD    %M150.0
+R_TRIG
+ANDN    %M31.7
+ST   %M35.1
+(* Network 6 *)
+(*Forgás közben érkezett indítások számlálása*)
+LD    %M35.1
+CTU   C5, %M35.2, 100
+__CR_EQ_1
+MOVE    C5, motstartfailed
+__CR_RESTORE
+ST   %BR0.0
+(* Network 7 *)
+LD    %M53.7
+OR(
+LD    IN_homing
+ANDN    FIN_jogtoorigin
+)
+ST   IN_homing
+(* Network 8 *)
+LD    IN_homing
+R_TRIG
+R    DONE
+R    DONE2
+(* Network 9 *)
+(*HOME pozíció keresése*)
+LD    IN_homing
+ANDN    FIN_findhome
+ST   IN_findhome
+(* Network 10 *)
+(*HOME pozíció keresése*)
+LD    IN_homing
+AND    IN_findhome
+AND    DONE
+R_TRIG
+OR(
+LD    IN_homing
+AND    FIN_findhome
+)
+ST   FIN_findhome
+(* Network 11 *)
+(*HOME->ORIGIN*)
+LD    IN_homing
+AND    FIN_findhome
+ANDN    FIN_jogtoorigin
+ST   IN_jogtoorigin
+(* Network 12 *)
+(*HOME->ORIGIN*)
+LD    IN_homing
+AND    IN_jogtoorigin
+AND    DONE2
+R_TRIG
+OR(
+LD    IN_homing
+AND    FIN_jogtoorigin
+)
+ST   FIN_jogtoorigin
+(* Network 13 *)
+LD    %I0.7
+R_TRIG
+ST   HOMET
+(* Network 14 *)
+LD    TRUE
+PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#500, W#50, DONE, ERR, ERRID
+(* Network 15 *)
+LD    TRUE
+PREL    0, IN_jogtoorigin, W#200, DW#500, W#500, DI#50, DONE2, ERR2, ERRID2

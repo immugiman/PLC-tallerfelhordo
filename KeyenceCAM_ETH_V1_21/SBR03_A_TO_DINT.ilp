@@ -1,0 +1,27 @@
+(*2*)
+(* Network 0 *)
+(*Pointerek VD5100-*)
+LD    %SM0.0
+MOVE    _POINTER, %VD5100
+MOVE    DI#0, _NUMBER
+MOVE    DI#1, _HELYERTEK
+(* Network 1 *)
+LD    %SM0.0
+FOR    _IDX, 1, _SZAMJEGY
+(* Network 2 *)
+LD    %SM0.0
+MOVE    *VD5100, _EGYBYTE
+B_TO_I    _EGYBYTE, _DECINT
+SUB    48, _DECINT
+I_TO_DI    _DECINT, _DECDINT
+(* Network 3 *)
+LD    %SM0.0
+MUL    _HELYERTEK, _DECDINT
+ADD    _DECDINT, _NUMBER
+(* Network 4 *)
+LD    %SM0.0
+MUL    DI#10, _HELYERTEK
+DEC    %VD5100
+(* Network 5 *)
+LD    TRUE
+NEXT

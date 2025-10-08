@@ -1,0 +1,21 @@
+(*2*)
+(* Network 0 *)
+(*Két memóriaterületet hasonlít össze.Maximális méret 256 byteHasznált globális memóriaterület:VD5000 pointer az egyik memóriaterületreVD5004 pointer a másik memóriaterületre*)
+LD    %SM0.0
+MOVE    _PTR1, %VD5000
+MOVE    _PTR2, %VD5004
+S    _EQUAL
+(* Network 1 *)
+LD    %SM0.0
+FOR    _IDX, 1, _COUNT
+(* Network 2 *)
+LD    %SM0.0
+NE    *VD5000, *VD5004
+R    _EQUAL
+(* Network 3 *)
+LD    %SM0.0
+INC    %VD5000
+INC    %VD5004
+(* Network 4 *)
+LD    _EQUAL
+NEXT

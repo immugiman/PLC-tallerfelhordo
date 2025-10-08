@@ -1,0 +1,49 @@
+(*2*)
+(* Network 0 *)
+(*HSC_PULSE a 10mm-eket számlálja.VW2700-ba pakolja a spirálba fogadásra váró csomag darabszámát.5  megszakításig várakozik, majd nullázza a VW2700-at, és a HIANYZO bitet magasra állítja.*)
+LD    %SM0.0
+MOVE    B#16#C0, %SMB37
+MOVE    DI#0, %SMD38
+MOVE    I#0, NULLA
+HSC    0
+(* Network 1 *)
+LD    %SM0.0
+ANDN    %M53.4
+WSFL    NULLA, SZALAGMEMO, 50, 1
+(* Network 2 *)
+(*FIFO STACK-ek kezdeti címeiek betöltése a pointerekbe.*)
+LD    %SM0.0
+AND    %M53.4
+WSFL    ATADO, SZALAGMEMO, 50, 1
+R    %M53.4
+(* Network 3 *)
+(*Spirálba átadásra vár*)
+LD    %SM0.0
+GT    %VW2698, I#0
+MOVE    %VW2698, ÁTADNIVALO
+MOVE    W#0, %VW2698
+MOVE    B#0, %VB2702
+S    %M35.5
+(* Network 4 *)
+(**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
+LD    %M35.5
+INC    %VB2702
+GT    %VB2702, B#5
+MOVE    I#0, ÁTADNIVALO
+R    %M35.5
+(* Network 5 *)
+(*Pozi növelése, és ha kifúvási pozícióba kerül, akkor flag állítása*)
+LD    %SM0.0
+AND(
+LD    %M30.5
+EQ    %VW2638, I#1
+OR(
+LD    TRUE
+EQ    %VW2638, I#10
+)
+)
+R_TRIG
+S    %M30.4
+(* Network 6 *)
+LD    %M53.5
+INC    csomhossz
