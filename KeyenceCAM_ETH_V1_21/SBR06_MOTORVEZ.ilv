@@ -13,4 +13,7 @@ VAR
     DONE2  AT  %L132.3 : BOOL ; (*  *) 
     ERR2  AT  %L132.4 : BOOL ; (*  *) 
     ERRID2  AT  %LB136 : BYTE ; (*  *) 
+    DONE3  AT  %L132.5 : BOOL ; (*  *) 
+    ERR3  AT  %L132.6 : BOOL ; (*  *) 
+    ERRID3  AT  %LB138 : BYTE ; (*  *) 
 END_VAR

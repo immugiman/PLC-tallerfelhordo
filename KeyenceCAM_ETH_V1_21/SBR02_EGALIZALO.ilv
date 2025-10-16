@@ -1,0 +1,3 @@
+VAR
+    szalagures  AT  %L132.5 : BOOL ; (*  *) 
+END_VAR
