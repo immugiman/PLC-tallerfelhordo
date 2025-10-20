@@ -25,6 +25,7 @@ CAL    SBR04    _CAM2ERROR, _CAM2RES, _CAM2JNR, _CAM2ONLINE
 (* Network 5 *)
 (*SPIRÁL MOTOR VEZÉRLÉSE*)
 LD    TRUE
+CAL    SBR02
 CAL    SBR06
 (* Network 6 *)
 (*Automatikus trigger idõzítõje, a HMI-n beállított ciklusidõvelTeszteléshez*)

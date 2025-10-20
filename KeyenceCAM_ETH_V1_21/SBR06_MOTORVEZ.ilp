@@ -100,8 +100,8 @@ PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#500, W#50, DONE, ERR,
 (* Network 15 *)
 (*kezdõ pozíció felvétele a nullponttól számítva negyed fordulat*)
 LD    TRUE
-PREL    0, %L62.5, W#200, DW#500, W#500, DI#50, %L66.1, %L66.2, %LB67
+PREL    0, IN_jogtoorigin, W#200, DW#500, W#500, DI#50, DONE2, ERR2, ERRID2
 (* Network 16 *)
 (*Egalizáló tallér szállító szalag*)
 LD    TRUE
-PJOG    1, %M36.7, DW#1000, I#0, %L66.3, %L66.4, %LB68
+PJOG    1, motor2, DW#1000, I#0, DONE3, ERR3, ERRID3

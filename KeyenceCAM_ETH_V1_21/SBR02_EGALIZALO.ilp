@@ -1,26 +1,46 @@
 (*2*)
 (* Network 0 *)
-LD    %M36.4
-ST   %M30.5
+(*Amint a frissen beérkezett egalizáló tallér kilép az érzékelõ alól, indítjuk a számlálást.*)
+LD    %M36.2
+R_TRIG
+INC    tallerszam
+ST   %SM231.6
 (* Network 1 *)
 LD    %M36.4
-OR    %L17.1
-ST   %L17.1
+AND(
+LD    %M36.2
+OR(
+LD    IN_feltölt
+GE    CELLEPES, %SMD242
+)
+)
+ST   IN_feltölt
 (* Network 2 *)
+LD    %M36.4
+ANDN    IN_feltölt
+ANDN    %M36.2
+ST   %M30.5
+(* Network 3 *)
 LD    %M36.4
 AND    %M36.3
 AND    %M36.5
 OR(
-LD    %L17.2
+LD    IN_kiadagol
 AND    %M36.3
 )
-ST   %L17.2
-(* Network 3 *)
-LD    %L17.2
-R_TRIG
-ST   %SM231.6
+ST   IN_kiadagol
 (* Network 4 *)
 LD    %M36.4
-AND    %L17.2
+AND(
+LD    IN_kiadagol
+OR(
+LDN    %M36.3
+AND    IN_feltölt
+)
+)
 OR    %M32.2
 ST   %M36.7
+(* Network 5 *)
+LD    IN_kiadagol
+F_TRIG
+DEC    tallerszam

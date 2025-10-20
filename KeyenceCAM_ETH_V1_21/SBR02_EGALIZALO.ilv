@@ -3,4 +3,5 @@ VAR
     IN_feltölt  AT  %L17.1 : BOOL ; (*  *) 
     IN_kiadagol  AT  %L17.2 : BOOL ; (*  *) 
     CELLEPES  AT  %LD24 : DINT ; (* Ennyit kell lépnünk. *) 
+    tallerszam  AT  %LW148 : INT ; (* Tallérok száma az egalizáló szalagon *) 
 END_VAR

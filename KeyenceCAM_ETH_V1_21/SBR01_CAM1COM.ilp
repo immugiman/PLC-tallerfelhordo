@@ -67,7 +67,7 @@ R    SETCAM
 (* Network 12 *)
 (*Ha OE,1-re jön válasz, akkor megvizsgálja, hogy OE<Cr>-e, és csak ezután megy folyamatosan fogadó állapotba a TCP kliens*)
 LD    IN_MODSET
-AND    %L25.7
+AND    %L89.7
 MOVE    &VB2000, %VD5000
 MOVE    &VB1005, %VD5004
 CAL    SBR00    %VD5000, %VD5004, 3, SETCAMOK
