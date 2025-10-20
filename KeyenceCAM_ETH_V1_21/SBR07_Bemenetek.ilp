@@ -23,3 +23,25 @@ LD    %M53.5
 ANDN    %M53.6
 )
 ST   %M53.5
+(* Network 5 *)
+(*Átfújt tallér megérkezett*)
+LD    %I1.4
+ST   %M36.0
+(* Network 6 *)
+LD    %M36.0
+TON   T28, 1
+__CR_EQ_1
+MOVE    T28, %LW60
+__CR_RESTORE
+ST   %M36.2
+(* Network 7 *)
+(*Egalizáló szalag végén áll egy tallér*)
+LD    %I1.5
+ST   %M36.1
+(* Network 8 *)
+LD    %M36.1
+TON   T29, 1
+__CR_EQ_1
+MOVE    T29, %LW58
+__CR_RESTORE
+ST   %M36.3

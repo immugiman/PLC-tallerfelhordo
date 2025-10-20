@@ -53,24 +53,24 @@ MOVE    T25, time22
 __CR_RESTORE
 S    STARTCLIENT
 (* Network 10 *)
-LD    CLIENT
+LD    %L17.7
 R_TRIG
-S    SETCAM
+S    %L35.4
 (* Network 11 *)
 (*CSATLAKOZÁS UTÁN KAMERA AUTOMATA KÜLDÉSRE ÁLLÍTÁSA*)
 LD    %SM0.0
-TCPC_XMTRCV    SETCAM, 1, C_CAMSET, 5, 10, 1000, 1, SETCAMRES, SETCAMPKG, %VB2100, %VW2120
-R    SETCAM
+TCPC_XMTRCV    %L35.4, 1, %VB1000, 5, 10, 1000, 1, %LB37, %L35.5, %VB2100, %VW2120
+R    %L35.4
 (* Network 12 *)
 LD    %SM0.0
-MOVE    B#2#10000011, FILTEREDRES
-AND    SETCAMRES, FILTEREDRES
+MOVE    B#2#10000011, %LB38
+AND    %LB37, %LB38
 (* Network 13 *)
 (*Ha nem érkezik válasz, az OE,1 utasításra, akkor újra próbálkozik*)
 LD    %SM0.0
-EQ    B#2#10000011, FILTEREDRES
+EQ    B#2#10000011, %LB38
 R_TRIG
-S    SETCAM
+S    %L35.4
 (* Network 14 *)
 (*Ha OE,1-re jön válasz, akkor megvizsgálja, hogy OE<Cr>-e, és csak ezután megy folyamatosan fogadó állapotba a TCP kliens*)
 LD    %SM0.0

@@ -1,3 +1,6 @@
 VAR
-    szalagures  AT  %L132.5 : BOOL ; (*  *) 
+    IN_moving  AT  %L17.0 : BOOL ; (*  *) 
+    IN_feltölt  AT  %L17.1 : BOOL ; (*  *) 
+    IN_kiadagol  AT  %L17.2 : BOOL ; (*  *) 
+    CELLEPES  AT  %LD24 : DINT ; (* Ennyit kell lépnünk. *) 
 END_VAR
