@@ -11,7 +11,7 @@ AND(
 LD    %M36.2
 OR(
 LD    IN_feltölt
-GE    CELLEPES, %SMD242
+GE    %VD618, %SMD242
 )
 )
 ST   IN_feltölt

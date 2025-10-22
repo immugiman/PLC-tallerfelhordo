@@ -32,18 +32,22 @@ GT    %VB2702, B#5
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5
 (* Network 5 *)
+LD    %SM0.0
+MOVE    &VW2600, %VD614
+ADD    kilokes, %VD614
+(* Network 6 *)
 (*Pozi növelése, és ha kifúvási pozícióba kerül, akkor flag állítása*)
 LD    %SM0.0
 AND(
 LD    %M30.5
-EQ    %VW2638, I#1
+EQ    *VD614, I#1
 OR(
 LD    TRUE
-EQ    %VW2638, I#10
+EQ    *VD614, I#10
 )
 )
 R_TRIG
 S    %M30.4
-(* Network 6 *)
+(* Network 7 *)
 LD    %M53.5
 INC    csomhossz

@@ -286,7 +286,7 @@ R    %M30.4
 (* Network 30 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, 1
+TON   T24, blowdura
 __CR_EQ_1
 MOVE    T24, blowtimer
 __CR_RESTORE
