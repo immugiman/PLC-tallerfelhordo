@@ -286,28 +286,28 @@ R    %M30.4
 (* Network 30 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, blowdura
+TON   T24, %VW622
 __CR_EQ_1
-MOVE    T24, blowtimer
+MOVE    T24, %VW336
 __CR_RESTORE
 R    %M30.6
 (* Network 31 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
-MOVE    0, SPIRALON
-MOVE    0, BLENDEN
+MOVE    0, %VW372
+MOVE    0, %VW374
 ST   %M30.1
 S    %M31.6
 (* Network 32 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
-MOVE    0, SUMCOUNT
-MOVE    0, SUMOUT
+MOVE    0, %VW310
+MOVE    0, %VW340
 (* Network 33 *)
 LD    %SM0.0
 MOVE    &VW458, %VD460
-GT    ptrdb, %VD460
+GT    %VD5012, %VD460
 OR    %M50.5
 ST   %M50.6
 (* Network 34 *)
