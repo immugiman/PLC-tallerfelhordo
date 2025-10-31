@@ -28,7 +28,7 @@ S    %M35.5
 (**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
 LD    %M35.5
 INC    %VB2702
-GT    %VB2702, B#6
+GT    %VB2702, %VB624
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5
 (* Network 5 *)

@@ -1,6 +1,6 @@
 (*2*)
 (* Network 0 *)
-(*Védett memóriatartományok:VD5000 - VD5007 CMPBLK részére foglalvaVD2536, VD2540 PINTER-ek*)
+(*Védett memóriatartományok:VD5000 - VD5007 CMPBLK részére foglalvaVD2536, VD2540 POINTER-ek*)
 LD    %SM0.1
 MOVE    0, NULL
 MOVE    10, _INT
@@ -13,7 +13,7 @@ LD    %SM0.1
 MOVE    &VW400, ptrdb
 MOVE    &VW500, ptrfifo
 (* Network 2 *)
-(*MODBUS rutin*)
+(*Bemenetek beolvasása*)
 LD    TRUE
 CAL    SBR07
 (* Network 3 *)
@@ -23,7 +23,7 @@ CAL    SBR01    _CAM1RES, _CAM1JNR, _CAM1ONLINE, _CAMERROR
 LD    TRUE
 CAL    SBR04    _CAM2ERROR, _CAM2RES, _CAM2JNR, _CAM2ONLINE
 (* Network 5 *)
-(*SPIRÁL MOTOR VEZÉRLÉSE*)
+(*Egalizáló, és SPIRÁL MOTOR VEZÉRLÉSE*)
 LD    TRUE
 CAL    SBR02
 CAL    SBR06
@@ -286,28 +286,28 @@ R    %M30.4
 (* Network 30 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, %VW622
+TON   T24, blowdura
 __CR_EQ_1
-MOVE    T24, %VW336
+MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
 (* Network 31 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
-MOVE    0, %VW372
-MOVE    0, %VW374
+MOVE    0, SPIRALON
+MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
 (* Network 32 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
-MOVE    0, %VW310
-MOVE    0, %VW340
+MOVE    0, SUMCOUNT
+MOVE    0, SUMOUT
 (* Network 33 *)
 LD    %SM0.0
 MOVE    &VW458, %VD460
-GT    %VD5012, %VD460
+GT    ptrdb, %VD460
 OR    %M50.5
 ST   %M50.6
 (* Network 34 *)
