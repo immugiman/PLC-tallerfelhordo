@@ -1,0 +1,4 @@
+VAR
+    t_etalpos  AT  %LW58 : INT ; (*  *) 
+    t_etalrec  AT  %LW60 : INT ; (*  *) 
+END_VAR

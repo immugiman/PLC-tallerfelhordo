@@ -1,6 +1,6 @@
 (*2*)
 (* Network 0 *)
-(*Védett memóriatartományok:VD5000 - VD5007 CMPBLK részére foglalvaVD2536, VD2540 PINTER-ek*)
+(*Védett memóriatartományok:VD5000 - VD5007 CMPBLK részére foglalvaVD2536, VD2540 POINTER-ek*)
 LD    %SM0.1
 MOVE    0, NULL
 MOVE    10, _INT
@@ -13,7 +13,7 @@ LD    %SM0.1
 MOVE    &VW400, ptrdb
 MOVE    &VW500, ptrfifo
 (* Network 2 *)
-(*MODBUS rutin*)
+(*Bemenetek beolvasása*)
 LD    TRUE
 CAL    SBR07
 (* Network 3 *)
@@ -23,8 +23,9 @@ CAL    SBR01    _CAM1RES, _CAM1JNR, _CAM1ONLINE, _CAMERROR
 LD    TRUE
 CAL    SBR04    _CAM2ERROR, _CAM2RES, _CAM2JNR, _CAM2ONLINE
 (* Network 5 *)
-(*SPIRÁL MOTOR VEZÉRLÉSE*)
+(*Egalizáló, és SPIRÁL MOTOR VEZÉRLÉSE*)
 LD    TRUE
+CAL    SBR02
 CAL    SBR06
 (* Network 6 *)
 (*Automatikus trigger idõzítõje, a HMI-n beállított ciklusidõvelTeszteléshez*)
@@ -281,16 +282,22 @@ ST   %M200.5
 LD    %M30.4
 R_TRIG
 S    %M30.6
-R    %M30.4
 (* Network 30 *)
+LD    %M30.4
+TON   T30, 4
+__CR_EQ_1
+MOVE    T30, atblowtimer
+__CR_RESTORE
+R    %M30.4
+(* Network 31 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, 1
+TON   T24, blowdura
 __CR_EQ_1
 MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
-(* Network 31 *)
+(* Network 32 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
@@ -298,18 +305,18 @@ MOVE    0, SPIRALON
 MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
-(* Network 32 *)
+(* Network 33 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
 MOVE    0, SUMCOUNT
 MOVE    0, SUMOUT
-(* Network 33 *)
+(* Network 34 *)
 LD    %SM0.0
 MOVE    &VW458, %VD460
 GT    ptrdb, %VD460
 OR    %M50.5
 ST   %M50.6
-(* Network 34 *)
+(* Network 35 *)
 (*Kamera bírálatok történetének törlése*)
 LD    %M50.2
 OR    %M50.6
@@ -318,27 +325,27 @@ FILL  B#0, %VB500, B#60
 FILL  B#0, %VB400, B#60
 MOVE    &VW400, ptrdb
 MOVE    &VW500, ptrfifo
-(* Network 35 *)
+(* Network 36 *)
 (*Felsõ szalag puffer és elemszám törlés HMI-rõl*)
 LD    %M30.2
 FILL  B#0, %VB2500, B#10
 FILL  B#0, %VB2520, B#10
 MOVE    0, FIFO_ELEMEK
-(* Network 36 *)
+(* Network 37 *)
 LD    %M31.0
 MOVE    0, TRIGTOUT
-(* Network 37 *)
+(* Network 38 *)
 LD    %M31.5
 R_TRIG
 FIFO_INIT
-(* Network 38 *)
+(* Network 39 *)
 LD    %M53.0
 MOVE    0, campush
 MOVE    0, pushpush
 MOVE    0, spinpop
-(* Network 39 *)
+(* Network 40 *)
 LD    %SM0.0
 MOVE    %SMB6, scantime
-(* Network 40 *)
+(* Network 41 *)
 LD    TRUE
 CAL    SBR08

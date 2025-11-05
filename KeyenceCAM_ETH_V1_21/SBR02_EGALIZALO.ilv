@@ -1,0 +1,11 @@
+VAR
+    IN_moving  AT  %L17.0 : BOOL ; (* Hézag létrehozása két tallér közt *) 
+    IN_feltölt  AT  %L17.1 : BOOL ; (* beérkezõ tallér mozgatása mí lelép az érzékelõrõl *) 
+    IN_kiadagol  AT  %L17.2 : BOOL ; (*  *) 
+    CELLEPES  AT  %LD24 : DINT ; (* Ennyit kell lépnünk. *) 
+    tallerszam  AT  %LW148 : INT ; (* Tallérok száma az egalizáló szalagon *) 
+    OK_kiadagol  AT  %L140.2 : BOOL ; (* Kiadagolt *) 
+    IN_kiad  AT  %L140.3 : BOOL ; (*  *) 
+    IN_kiadhoz  AT  %L140.4 : BOOL ; (*  *) 
+    kezdolepes  AT  %LD150 : DINT ; (*  *) 
+END_VAR

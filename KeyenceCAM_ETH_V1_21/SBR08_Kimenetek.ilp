@@ -10,7 +10,7 @@ LD    %M50.4
 ST   %M100.2
 (* Network 2 *)
 LD    %M100.0
-ST   %Q0.1
+ST   %Q0.5
 (* Network 3 *)
 LD    %M100.1
 ST   %Q0.2
@@ -21,15 +21,6 @@ ST   %Q0.3
 LD    %M100.3
 ST   %Q0.4
 (* Network 6 *)
-LD    %M200.0
-AND    %M200.4
-ANDN    %M200.5
-ST   %M100.4
-(* Network 7 *)
-(*Feladás a szalagra a régi szalagrendszer visszafelé járatásával.*)
-LD    %M100.4
-ST   %Q0.5
-(* Network 8 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
 ST   %Q1.1

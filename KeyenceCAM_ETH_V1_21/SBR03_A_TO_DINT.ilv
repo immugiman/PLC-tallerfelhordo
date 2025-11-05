@@ -1,14 +1,14 @@
 VAR_INPUT
-    _SZAMJEGY  AT  %LW20 : INT ; (*  *) 
-    _POINTER  AT  %LD32 : DWORD ; (*  *) 
+    _SZAMJEGY  AT  %LW0 : INT ; (*  *) 
+    _POINTER  AT  %LD2 : DWORD ; (*  *) 
 END_VAR
 VAR_OUTPUT
-    _NUMBER  AT  %LD36 : DINT ; (*  *) 
+    _NUMBER  AT  %LD6 : DINT ; (*  *) 
 END_VAR
 VAR
-    _DECDINT  AT  %LD40 : DINT ; (*  *) 
-    _IDX  AT  %LW22 : INT ; (*  *) 
-    _EGYBYTE  AT  %LB44 : BYTE ; (*  *) 
-    _HELYERTEK  AT  %LD46 : DINT ; (*  *) 
-    _DECINT  AT  %LW50 : INT ; (*  *) 
+    _DECDINT  AT  %LD10 : DINT ; (*  *) 
+    _IDX  AT  %LW14 : INT ; (*  *) 
+    _EGYBYTE  AT  %LB16 : BYTE ; (*  *) 
+    _HELYERTEK  AT  %LD18 : DINT ; (*  *) 
+    _DECINT  AT  %LW22 : INT ; (*  *) 
 END_VAR

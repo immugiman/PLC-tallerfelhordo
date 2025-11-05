@@ -1,0 +1,90 @@
+(*2*)
+(* Network 0 *)
+LD    %M36.4
+AND(
+LD    %M36.2
+R_TRIG
+INC    tallerszam
+OR(
+LD    IN_feltölt
+ANDN    IN_moving
+)
+)
+ST   IN_feltölt
+(* Network 1 *)
+LD    %M36.4
+AND    %M36.2
+F_TRIG
+OR(
+LD    %M36.4
+AND    IN_moving
+LT    %SMD242, %VD618
+)
+ST   IN_moving
+(* Network 2 *)
+LD    IN_moving
+R_TRIG
+ST   %SM231.6
+(* Network 3 *)
+LD    %M36.4
+ANDN    IN_feltölt
+ANDN    IN_moving
+ST   %M30.5
+(* Network 4 *)
+LD    %M36.4
+AND    %M36.5
+R_TRIG
+OR    IN_kiad
+OR    IN_kiadhoz
+ST   IN_kiadagol
+(* Network 5 *)
+LD    IN_kiadagol
+R_TRIG
+OR(
+LD    IN_kiadhoz
+F_TRIG
+)
+AND    %M36.3
+OR(
+LD    %M36.4
+AND    IN_kiad
+AND    %M36.3
+)
+ST   IN_kiad
+(* Network 6 *)
+LD    IN_kiadagol
+R_TRIG
+ANDN    %M36.3
+OR(
+LD    %M36.4
+AND    IN_kiadhoz
+ANDN    %M36.3
+)
+ST   IN_kiadhoz
+(* Network 7 *)
+LD    IN_kiad
+F_TRIG
+NE    tallerszam, 0
+DEC    tallerszam
+(* Network 8 *)
+LD    %M36.4
+AND(
+LD    IN_kiadagol
+OR(
+LDN    %M36.3
+AND(
+LD    IN_feltölt
+OR    IN_moving
+)
+)
+)
+OR    %M32.2
+ST   %M36.7
+(* Network 9 *)
+LD    %M36.7
+R_TRIG
+MOVE    %SMD242, kezdolepes
+(* Network 10 *)
+LD    %M36.7
+GT    %SMD242, DI#1500
+MOVE    0, tallerszam
