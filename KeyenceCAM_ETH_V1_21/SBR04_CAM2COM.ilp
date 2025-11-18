@@ -10,18 +10,18 @@ MOVE    0, _RESULT
 (* Network 2 *)
 LD    %SM0.0
 ETH_STATUS    ETHLINE    TCPCONN    TCPSERV    UDPPEERS
-MOVE    DW#2, TPCONN0
-AND    TCPCONN, TPCONN0
-EQ    DW#2, TPCONN0
-S    CLIENT
 (* Network 3 *)
 (*CABLE CONNECTED*)
 LD    ETHLINE
 ST   %M51.4
 (* Network 4 *)
 (*Kliens Nr.0 ONLINE*)
-LD    CLIENT
+LD    ETHLINE
+MOVE    DW#2, TPCONN0
+AND    TCPCONN, TPCONN0
+EQ    DW#2, TPCONN0
 ST   %M51.5
+ST   CLIENT
 (* Network 5 *)
 (*KAMERA AUTOMATA SEND Bekapcsolva*)
 LD    SETCAMPKG
@@ -32,60 +32,92 @@ ST   ONLINE
 LD    LEDON
 ST   %M51.7
 (* Network 7 *)
-(*Ha ETH vonal él, de nincs cliens kapcsolat a szerverhez*)
-LD    ETHLINE
-ANDN    CLIENT
-R_TRIG
-S    STARTCLIENT
-(* Network 8 *)
-(*Kliens Csatlakoztatása*)
-LD    %SM0.0
-TCP_CLIENT    STARTCLIENT, 1, 192.168.0.4, W#8000, 2000, CLIENTRES, CLIENTGOOD
-R    STARTCLIENT
-(* Network 9 *)
-LD    %L24.7
-MOVE    B#2#10000011, _CLIENTRESFILTERED
-AND    CLIENTRES, _CLIENTRESFILTERED
-EQ    B#2#10000011, _CLIENTRESFILTERED
-TON   T25, 10
-__CR_EQ_1
-MOVE    T25, time22
-__CR_RESTORE
-S    STARTCLIENT
-(* Network 10 *)
 LD    CLIENT
-R_TRIG
-S    SETCAM
+ST   OK_CLI
+(* Network 8 *)
+LD    ETHLINE
+ANDN    OK_CLI
+ST   IN_CLI
+(* Network 9 *)
+LD    IN_CLI
+AND    T32
+ST   STARTCLIENT
+(* Network 10 *)
+LD    IN_CLI
+ANDN    T32
+TON   T32, 20
+__CR_EQ_1
+MOVE    T32, t_31
+__CR_RESTORE
+ST   %BR0.0
 (* Network 11 *)
-(*CSATLAKOZÁS UTÁN KAMERA AUTOMATA KÜLDÉSRE ÁLLÍTÁSA*)
-LD    %SM0.0
-TCPC_XMTRCV    SETCAM, 1, C_CAMSET, 5, 10, 1000, 1, SETCAMRES, SETCAMPKG, %VB2100, %VW2120
-R    SETCAM
+(*Kliens Csatlakoztatása*)
+LD    IN_CLI
+OR    OK_CLI
+TCP_CLIENT    STARTCLIENT, 1, 192.168.0.4, W#8000, 2000, CLIENTRES, CLIENTGOOD
 (* Network 12 *)
-LD    %SM0.0
-MOVE    B#2#10000011, FILTEREDRES
-AND    SETCAMRES, FILTEREDRES
+(*### Kamera folyamatosan küldés üzemmód beállítása. ###*)
+LD    OK_CLI
+ANDN    OK_SETCAM
+ST   IN_SETCAM
 (* Network 13 *)
-(*Ha nem érkezik válasz, az OE,1 utasításra, akkor újra próbálkozik*)
-LD    %SM0.0
-EQ    B#2#10000011, FILTEREDRES
-R_TRIG
-S    SETCAM
+LD    OK_CLI
+TCPC_XMTRCV    SETCAM, 1, C_CAMSET, 5, 10, 1000, 1, SETCAMRES, SETCAMPKG, %VB2100, %VW2120
 (* Network 14 *)
 (*Ha OE,1-re jön válasz, akkor megvizsgálja, hogy OE<Cr>-e, és csak ezután megy folyamatosan fogadó állapotba a TCP kliens*)
-LD    %SM0.0
-EQ    B#2#10000000, FILTEREDRES
+LD    OK_CLI
+ANDN    OK_SETCAM
+AND    %L37.7
+ANDN    %L37.0
+ANDN    %L37.1
 MOVE    &VB2100, %VD5000
 MOVE    &VB1005, %VD5004
 CAL    SBR00    %VD5000, %VD5004, 3, SETCAMOK
 (* Network 15 *)
-LD    SETCAMOK
-R_TRIG
-S    EXECRCV
+LD    OK_CLI
+AND    SETCAMOK
+ST   OK_SETCAM
 (* Network 16 *)
-LD    %SM0.0
-TCPC_RCV    EXECRCV, 1, 40, 0, RCVRES, NEWPKG, PUFF_C2, %VW2160
+LD    IN_SETCAM
+AND    T33
+ST   SETCAM
 (* Network 17 *)
+LD    IN_SETCAM
+ANDN    T33
+TON   T33, 4
+__CR_EQ_1
+MOVE    T33, t_33
+__CR_RESTORE
+ST   %BR0.0
+(* Network 18 *)
+LD    OK_SETCAM
+ANDN    OK_RCV
+ST   IN_RCV
+(* Network 19 *)
+(*### PLC folyamatos fogadás üzemmód beállítása ###*)
+LD    IN_RCV
+AND    T34
+ST   EXECRCV
+(* Network 20 *)
+LD    IN_RCV
+ANDN    T34
+TON   T34, 20
+__CR_EQ_1
+MOVE    T34, t_34
+__CR_RESTORE
+ST   %BR0.0
+(* Network 21 *)
+LD    IN_RCV
+OR    OK_RCV
+OR    OK_SETCAM
+TCPC_RCV    OK_SETCAM, 1, 40, 0, RCVRES, NEWPKG, PUFF_C2, %VW2160
+(* Network 22 *)
+LD    OK_SETCAM
+AND    %L36.7
+ANDN    %L36.0
+ANDN    %L36.1
+ST   OK_RCV
+(* Network 23 *)
 LD    NEWPKG
 R_TRIG
 EQ    PUFF_C2, B#82
@@ -94,13 +126,13 @@ CAL    SBR03    5, CONVP, _JUDGENR
 B_TO_I    %VB2154, _RESULT
 SUB    48, _RESULT
 R    _ERROR
-(* Network 18 *)
+(* Network 24 *)
 LD    NEWPKG
 R_TRIG
 NE    PUFF_C2, B#82
 BLKMOVE  PUFF_C2, ERRORMSG, B#7
 S    _ERROR
-(* Network 19 *)
+(* Network 25 *)
 LD    NEWPKG
 R_TRIG
 TOF   T26, 1

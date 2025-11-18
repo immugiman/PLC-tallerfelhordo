@@ -26,4 +26,13 @@ VAR
     SETCAMPKG  AT  %L35.5 : BOOL ; (*  *) 
     SETCAMOK  AT  %L35.6 : BOOL ; (*  *) 
     LEDON  AT  %L35.7 : BOOL ; (*  *) 
+    t_31  AT  %LW154 : INT ; (*  *) 
+    OK_CLI  AT  %L140.5 : BOOL ; (*  *) 
+    IN_CLI  AT  %L140.6 : BOOL ; (*  *) 
+    OK_SETCAM  AT  %L140.7 : BOOL ; (*  *) 
+    IN_SETCAM  AT  %L141.0 : BOOL ; (*  *) 
+    t_33  AT  %LW156 : INT ; (*  *) 
+    OK_RCV  AT  %L141.1 : BOOL ; (* RCV client fut *) 
+    IN_RCV  AT  %L141.2 : BOOL ; (* RCV client csatlakozás *) 
+    t_34  AT  %LW158 : INT ; (*  *) 
 END_VAR
