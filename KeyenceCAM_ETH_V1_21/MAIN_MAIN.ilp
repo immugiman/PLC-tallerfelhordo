@@ -16,6 +16,8 @@ MOVE    &VW500, ptrfifo
 (*Bemenetek beolvasása*)
 LD    TRUE
 CAL    SBR07
+CAL    SBR05
+CAL    SBR09
 (* Network 3 *)
 LD    TRUE
 CAL    SBR01    _CAM1RES, _CAM1JNR, _CAM1ONLINE, _CAMERROR

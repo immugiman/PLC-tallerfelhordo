@@ -1,0 +1,97 @@
+(*2*)
+(* Network 0 *)
+(****** ALSÓ PAPÍRADAGOLÓ ******)
+LD    %I3.3
+ST   onoff
+(* Network 1 *)
+LD    %I3.2
+ST   manual
+(* Network 2 *)
+LD    %I3.1
+ST   korongsens
+(* Network 3 *)
+LD    %I3.0
+ST   mhalap
+(* Network 4 *)
+LD    adagolas
+ORN    korongsens
+AND    A_run
+OR    manual
+ST   Qmot
+(* Network 5 *)
+LD    mhalap
+R_TRIG
+AND    korongsens
+OR(
+LD    adagolas
+AND    korongsens
+)
+AND    A_run
+ST   adagolas
+(* Network 6 *)
+LD    A_run
+ANDN    korongsens
+ANDN    hiba
+TON   T35, 40
+__CR_EQ_1
+MOVE    T35, t_35
+__CR_RESTORE
+ST   %BR0.0
+(* Network 7 *)
+LD    A_run
+AND(
+LD    T35
+OR(
+LD    hiba
+ANDN    onoff
+)
+)
+ST   hiba
+(* Network 8 *)
+(*Indítás / leállítás*)
+LD    onoff
+OR    A_run
+ANDN    A_stop
+ANDN    hiba
+ST   A_run
+(* Network 9 *)
+LD    A_run
+AND(
+LDN    onoff
+OR    A_koztes
+)
+ST   A_koztes
+(* Network 10 *)
+LD    A_koztes
+OR    A_stop
+AND    onoff
+ST   A_stop
+(* Network 11 *)
+LD    A_run
+R_TRIG
+R    blink
+(* Network 12 *)
+LD    hiba
+ANDN    T36
+TOF   T36, 2
+__CR_EQ_1
+MOVE    T36, t_36
+__CR_RESTORE
+ST   %BR0.0
+(* Network 13 *)
+LD    hiba
+AND    T36
+ALT    blink
+(* Network 14 *)
+LD    blink
+OR    A_run
+ST   Qled
+(* Network 15 *)
+LD    Qled
+ST   %Q3.0
+(* Network 16 *)
+LD    Qmot
+ST   %Q3.1
+(* Network 17 *)
+LD    Qmhveg
+ST   %Q0.2
