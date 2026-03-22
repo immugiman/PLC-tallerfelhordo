@@ -12,6 +12,7 @@ ATCH    INT01, 4
 LD    %SM0.1
 MOVE    &VW400, ptrdb
 MOVE    &VW500, ptrfifo
+MOVE    B#0, ZERO
 (* Network 2 *)
 (*Bemenetek beolvasása*)
 LD    TRUE
@@ -156,6 +157,7 @@ R_TRIG
 AND(
 LD    TRUE
 GT    _CAM1RES, 0
+MOVE    B#0, ZERO
 FIFO_SIZE    _FIFOSIZE
 MOVE    _FIFOSIZE, *VD5016
 MOVE    _CAM1RES, *VD5012
@@ -165,6 +167,9 @@ FIFO_PUSH    _CAM1RES
 OR(
 LD    TRUE
 EQ    _CAM1RES, 0
+INC    ZERO
+GT    ZERO, B#3
+FIFO_INIT
 )
 )
 R    %M31.1
@@ -177,6 +182,7 @@ R_TRIG
 AND(
 LD    TRUE
 GT    _CAM2RES, 0
+MOVE    B#0, ZERO
 FIFO_SIZE    _FIFOSIZE
 MOVE    _FIFOSIZE, *VD5016
 MOVE    _CAM2RES, *VD5012
@@ -186,6 +192,9 @@ FIFO_PUSH    _CAM2RES
 OR(
 LD    TRUE
 EQ    _CAM2RES, 0
+INC    ZERO
+GT    ZERO, B#3
+FIFO_INIT
 )
 )
 R    %M31.2
