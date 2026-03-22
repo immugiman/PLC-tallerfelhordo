@@ -1,0 +1,17 @@
+VAR
+    A_run  AT  %L161.0 : BOOL ; (*  *) 
+    A_koztes  AT  %L161.1 : BOOL ; (*  *) 
+    A_stop  AT  %L161.2 : BOOL ; (*  *) 
+    onoff  AT  %L161.3 : BOOL ; (* ON/OFF gomb lenyomás *) 
+    Qled  AT  %L161.4 : BOOL ; (* Kimenet a ledhez *) 
+    Qmot  AT  %L161.5 : BOOL ; (* Kimenet a motorhoz *) 
+    Qmhveg  AT  %L161.6 : BOOL ; (* Munkahenger véghelyzet engedélyezés *) 
+    korongsens  AT  %L161.7 : BOOL ; (* Konrong szenzor bemenet *) 
+    manual  AT  %L166.0 : BOOL ; (* Kézi motormozgatás bemenet *) 
+    hiba  AT  %L166.1 : BOOL ; (* Hiba elzõ bit *) 
+    t_37  AT  %LW168 : INT ; (*  *) 
+    blink  AT  %L166.2 : BOOL ; (* Villogás *) 
+    t_38  AT  %LW170 : INT ; (*  *) 
+    adagolas  AT  %L166.3 : BOOL ; (*  *) 
+    mhalap  AT  %L166.4 : BOOL ; (* MH alaphelyzetben *) 
+END_VAR

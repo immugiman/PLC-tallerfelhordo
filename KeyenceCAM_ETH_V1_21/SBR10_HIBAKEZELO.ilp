@@ -1,0 +1,5 @@
+(*2*)
+(* Network 0 *)
+LDN    %M40.0
+ANDN    %M40.1
+ST   %M40.2

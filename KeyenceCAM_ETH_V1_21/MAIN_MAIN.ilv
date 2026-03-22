@@ -23,4 +23,5 @@ VAR
     _CAM2_LASTNR  AT  %LD142 : DINT ; (*  *) 
     _CAM1COMPLETED  AT  %L140.1 : BOOL ; (*  *) 
     _FIFOS  AT  %LW146 : INT ; (*  *) 
+    _t39  AT  %LW172 : INT ; (*  *) 
 END_VAR

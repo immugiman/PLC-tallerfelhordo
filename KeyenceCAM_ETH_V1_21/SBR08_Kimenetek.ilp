@@ -2,6 +2,10 @@
 (* Network 0 *)
 LD    %M50.3
 AND    %M200.4
+OR(
+LD    %M200.0
+AND    %I2.0
+)
 ANDN    %M200.5
 ST   %M100.0
 ST   %M100.1
@@ -25,14 +29,13 @@ ST   %Q0.4
 LD    %M30.6
 ST   %Q1.1
 (* Network 7 *)
-LD    %M52.0
-ST   %Q1.3
+LD    %M40.2
+ST   %Q3.7
 (* Network 8 *)
-LD    %M22.0
-ST   %Q1.4
-(* Network 9 *)
-LD    %M22.1
-ST   %Q1.5
-(* Network 10 *)
-LD    %M22.2
-ST   %Q1.6
+(*LEADAS jel kitartása 100ms*)
+LD    %M52.0
+TOF   T40, 1
+__CR_EQ_1
+MOVE    T40, _t40
+__CR_RESTORE
+ST   %Q1.3

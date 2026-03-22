@@ -17,5 +17,6 @@ VAR
     korongerk  AT  %L166.5 : BOOL ; (* korong megérkezett *) 
     offoff  AT  %L166.6 : BOOL ; (* off gomb elengedve *) 
     mhveg_mehet  AT  %L166.7 : BOOL ; (*  *) 
+    mhveg_esik  AT  %L167.0 : BOOL ; (*  *) 
     leadva  AT  %L167.1 : BOOL ; (* Ha megtörtént a korong leadás, a szenzorjel lemenõ elzi *) 
 END_VAR
