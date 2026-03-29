@@ -39,3 +39,12 @@ __CR_EQ_1
 MOVE    T40, _t40
 __CR_RESTORE
 ST   %Q1.3
+(* Network 9 *)
+LD    %M40.3
+ST   %Q1.4
+(* Network 10 *)
+LD    %M40.4
+ST   %Q1.5
+(* Network 11 *)
+LD    %M40.5
+ST   %Q1.6

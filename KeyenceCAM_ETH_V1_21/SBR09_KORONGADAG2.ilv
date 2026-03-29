@@ -14,4 +14,9 @@ VAR
     t_38  AT  %LW170 : INT ; (*  *) 
     adagolas  AT  %L166.3 : BOOL ; (*  *) 
     mhalap  AT  %L166.4 : BOOL ; (* MH alaphelyzetben *) 
+    korongerk  AT  %L167.2 : BOOL ; (*  *) 
+    leadva  AT  %L167.3 : BOOL ; (*  *) 
+    offoff  AT  %L167.4 : BOOL ; (*  *) 
+    mhveg_esik  AT  %L167.5 : BOOL ; (*  *) 
+    mhveg_mehet  AT  %L167.6 : BOOL ; (*  *) 
 END_VAR
