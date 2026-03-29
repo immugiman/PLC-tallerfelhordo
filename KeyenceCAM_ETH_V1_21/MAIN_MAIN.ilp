@@ -167,9 +167,16 @@ FIFO_PUSH    _CAM1RES
 OR(
 LD    TRUE
 EQ    _CAM1RES, 0
+AND(
+LD    TRUE
 INC    ZERO
 GT    ZERO, B#3
 FIFO_INIT
+OR(
+LD    TRUE
+NOP    0
+)
+)
 )
 )
 R    %M31.1
@@ -192,9 +199,16 @@ FIFO_PUSH    _CAM2RES
 OR(
 LD    TRUE
 EQ    _CAM2RES, 0
+AND(
+LD    TRUE
 INC    ZERO
 GT    ZERO, B#3
 FIFO_INIT
+OR(
+LD    TRUE
+NOP    0
+)
+)
 )
 )
 R    %M31.2
@@ -286,7 +300,7 @@ MOVE    0, BLENDEN
 (* Network 28 *)
 LD    %M200.0
 AND    %M200.4
-GT    BLENDEN, 10
+GT    BLENDEN, 15
 ST   %M200.5
 (* Network 29 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
@@ -369,7 +383,7 @@ AND(
 LDN    %I2.0
 ORN    %M40.2
 )
-TON   T39, I#50
+TON   T39, I#1000
 __CR_EQ_1
 MOVE    T39, _t39
 __CR_RESTORE
