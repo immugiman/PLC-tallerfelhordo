@@ -96,7 +96,7 @@ ST   HOMET
 (* Network 14 *)
 (*Nullpont keresés spirál motor*)
 LD    TRUE
-PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#500, W#50, DONE, ERR, ERRID
+PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#1000, W#50, DONE, ERR, ERRID
 (* Network 15 *)
 (*kezdõ pozíció felvétele a nullponttól számítva negyed fordulat*)
 LD    TRUE

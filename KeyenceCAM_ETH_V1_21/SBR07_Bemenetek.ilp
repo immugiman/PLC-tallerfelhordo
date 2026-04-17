@@ -42,6 +42,19 @@ ST   %M36.1
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
-MOVE    T29, t_etalpos
+MOVE    T29, %LW58
 __CR_RESTORE
 ST   %M36.3
+(* Network 9 *)
+LD    %I2.3
+ANDN    %M40.6
+ANDN    %M400.0
+ST   %M50.3
+(* Network 10 *)
+LD    %I2.0
+ANDN    %M40.6
+ST   %M200.0
+(* Network 11 *)
+LD    %I2.1
+ANDN    %M40.6
+ST   %M52.1

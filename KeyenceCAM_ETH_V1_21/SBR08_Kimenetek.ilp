@@ -1,11 +1,6 @@
 (*2*)
 (* Network 0 *)
 LD    %M50.3
-AND    %M200.4
-OR(
-LD    %M200.0
-AND    %I2.0
-)
 ANDN    %M200.5
 ST   %M100.0
 ST   %M100.1
