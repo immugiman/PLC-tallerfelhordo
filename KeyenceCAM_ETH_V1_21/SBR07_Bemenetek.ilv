@@ -1,4 +1,5 @@
 VAR
     t_etalpos  AT  %LW58 : INT ; (*  *) 
     t_etalrec  AT  %LW60 : INT ; (*  *) 
+    t_spintrig  AT  %LW176 : INT ; (*  *) 
 END_VAR

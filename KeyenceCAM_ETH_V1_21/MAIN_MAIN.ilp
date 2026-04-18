@@ -17,7 +17,6 @@ MOVE    B#0, ZERO
 (*Bemenetek beolvasása*)
 LD    TRUE
 CAL    SBR07
-AND    %M200.0
 CAL    SBR05
 CAL    SBR09
 (* Network 3 *)
@@ -298,15 +297,15 @@ R    %M40.3
 R    %M40.4
 S    %M40.5
 (* Network 28 *)
-(*4db Csomagológépnek bitek átadása*)
+(*>4db Csomagológépnek bitek átadása*)
 LD    TRUE
-EQ    SPIRALON, I#4
+GE    SPIRALON, I#4
 R_TRIG
 S    %M40.3
 S    %M40.4
 S    %M40.5
 (* Network 29 *)
-(*AUTOMATA üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
+(*TESZT üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
 LD    %M40.6
 AND    %M52.0
 MOVE    SUMOUT, KONTROLL
@@ -327,19 +326,20 @@ LD    %M52.0
 AND(
 LDN    %M300.0
 ORN    %M52.1
-ADD    %VW376, %VW340
+ADD    LEDOBVA, SUMOUT
 OR(
 LD    %M300.0
 OR    %M52.1
-ADD    %VW376, %VW374
+ADD    LEDOBVA, BLENDEN
 )
 )
 (* Network 32 *)
 LD    %M52.1
-GT    %VW374, 15
+F_TRIG
+MOVE    0, BLENDEN
 (* Network 33 *)
-LD    %M200.0
-GT    %VW374, 15
+LD    TRUE
+GT    BLENDEN, 15
 ST   %M200.5
 (* Network 34 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
@@ -350,15 +350,15 @@ S    %M30.6
 LD    %M30.4
 TON   T30, 4
 __CR_EQ_1
-MOVE    T30, %VW626
+MOVE    T30, atblowtimer
 __CR_RESTORE
 R    %M30.4
 (* Network 36 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, %VW622
+TON   T24, blowdura
 __CR_EQ_1
-MOVE    T24, %VW336
+MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
 (* Network 37 *)

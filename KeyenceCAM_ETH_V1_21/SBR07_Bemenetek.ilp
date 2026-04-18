@@ -8,53 +8,61 @@ R_TRIG
 AND    %M35.5
 ST   %M52.0
 (* Network 2 *)
+LD    %M150.0
+TON   T7, 10
+__CR_EQ_1
+MOVE    T7, t_spintrig
+__CR_RESTORE
+ST   %M200.7
+(* Network 3 *)
 (*100ms-ig szûri a bejövõ jelet*)
 LD    %I0.6
 R_TRIG
 ST   %M30.3
-(* Network 3 *)
+(* Network 4 *)
 LD    %I0.6
 F_TRIG
 ST   %M53.6
-(* Network 4 *)
+(* Network 5 *)
 LD    %M30.3
 OR(
 LD    %M53.5
 ANDN    %M53.6
 )
 ST   %M53.5
-(* Network 5 *)
+(* Network 6 *)
 (*Átfújt tallér megérkezett*)
 LD    %I1.4
 ST   %M36.0
-(* Network 6 *)
+(* Network 7 *)
 LD    %M36.0
 TON   T28, 3
 __CR_EQ_1
 MOVE    T28, t_etalrec
 __CR_RESTORE
 ST   %M36.2
-(* Network 7 *)
+(* Network 8 *)
 (*Egalizáló szalag végén áll egy tallér*)
 LD    %I1.5
 ST   %M36.1
-(* Network 8 *)
+(* Network 9 *)
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
-MOVE    T29, %LW58
+MOVE    T29, t_etalpos
 __CR_RESTORE
 ST   %M36.3
-(* Network 9 *)
+(* Network 10 *)
 LD    %I2.3
 ANDN    %M40.6
-ANDN    %M400.0
+ANDN    %M200.5
+AND    %M400.0
 ST   %M50.3
-(* Network 10 *)
+(* Network 11 *)
 LD    %I2.0
 ANDN    %M40.6
 ST   %M200.0
-(* Network 11 *)
+(* Network 12 *)
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1
