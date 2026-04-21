@@ -28,6 +28,10 @@ ST   %Q3.7
 (* Network 8 *)
 (*LEADAS jel kitartása 100ms*)
 LD    %M52.0
+OR(
+LD    %M54.1
+R_TRIG
+)
 TOF   T40, 1
 __CR_EQ_1
 MOVE    T40, _t40

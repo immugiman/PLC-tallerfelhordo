@@ -24,4 +24,7 @@ VAR
     _CAM1COMPLETED  AT  %L140.1 : BOOL ; (*  *) 
     _FIFOS  AT  %LW146 : INT ; (*  *) 
     _t39  AT  %LW172 : INT ; (*  *) 
+    _t41  AT  %LW178 : INT ; (*  *) 
+    _homing  AT  %L167.7 : BOOL ; (* homing folyamatban *) 
+    _t42  AT  %LW180 : INT ; (* homing utáni leadásjel a csomigep felé késleltetve *) 
 END_VAR

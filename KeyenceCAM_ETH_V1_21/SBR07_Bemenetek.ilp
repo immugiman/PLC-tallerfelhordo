@@ -55,8 +55,12 @@ ST   %M36.3
 (* Network 10 *)
 LD    %I2.3
 ANDN    %M40.6
+OR(
+LD    %M40.6
+AND    %M201.0
+)
 ANDN    %M200.5
-AND    %M400.0
+ANDN    %M400.0
 ST   %M50.3
 (* Network 11 *)
 LD    %I2.0

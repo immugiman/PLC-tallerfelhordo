@@ -306,19 +306,19 @@ S    %M40.4
 S    %M40.5
 (* Network 29 *)
 (*TESZT üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
-LD    %M40.6
+LD    FALSE
 AND    %M52.0
 MOVE    SUMOUT, KONTROLL
 ADD    LEDOBVA, KONTROLL
 GT    KONTROLL, IGÉNY
 OR(
-LD    %M40.6
+LD    FALSE
 AND    %M300.0
 ANDN    %M200.3
 )
 ST   %M300.0
 (* Network 30 *)
-LD    %M40.6
+LD    FALSE
 AND    %M300.0
 ST   %M100.3
 (* Network 31 *)
@@ -336,6 +336,7 @@ ADD    LEDOBVA, BLENDEN
 (* Network 32 *)
 LD    %M52.1
 F_TRIG
+OR    %M40.6
 MOVE    0, BLENDEN
 (* Network 33 *)
 LD    TRUE
@@ -429,6 +430,48 @@ AND    T39
 R_TRIG
 R    %M50.4
 (* Network 49 *)
+(*Idõszakos home-ingolása a spiralmotornak*)
+LD    FALSE
+AND    %M50.3
+ANDN    _homing
+TON   T41, 100
+__CR_EQ_1
+MOVE    T41, _t41
+__CR_RESTORE
+ST   %M54.0
+(* Network 50 *)
+LD    FALSE
+AND(
+LD    %M54.0
+EQ    FIFO_ELEMEK, 0
+R_TRIG
+OR(
+LD    _homing
+ANDN    T43
+)
+)
+ST   _homing
+(* Network 51 *)
+LD    _homing
+R_TRIG
+ST   %M53.7
+(* Network 52 *)
+LD    _homing
+TON   T42, 5
+__CR_EQ_1
+MOVE    T42, _t42
+__CR_RESTORE
+R_TRIG
+OR    %M54.1
+ST   %M54.1
+(* Network 53 *)
+LD    %M54.1
+TON   T43, 1
+__CR_EQ_1
+MOVE    T43, _t42
+__CR_RESTORE
+MOVE    0, SPIRALON
+(* Network 54 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08
