@@ -10,8 +10,6 @@ MOVE    DI#10, %SMD16
 ATCH    INT01, 4
 (* Network 1 *)
 LD    %SM0.1
-MOVE    &VW400, ptrdb
-MOVE    &VW500, ptrfifo
 MOVE    B#0, ZERO
 (* Network 2 *)
 (*Bemenetek beolvasása*)
@@ -159,10 +157,6 @@ LD    TRUE
 GT    _CAM1RES, 0
 MOVE    B#0, ZERO
 FIFO_SIZE    _FIFOSIZE
-MOVE    _FIFOSIZE, *VD5016
-MOVE    _CAM1RES, *VD5012
-ADD    DW#2, ptrfifo
-ADD    DW#2, ptrdb
 FIFO_PUSH    _CAM1RES
 OR(
 LD    TRUE
@@ -191,10 +185,6 @@ LD    TRUE
 GT    _CAM2RES, 0
 MOVE    B#0, ZERO
 FIFO_SIZE    _FIFOSIZE
-MOVE    _FIFOSIZE, *VD5016
-MOVE    _CAM2RES, *VD5012
-ADD    DW#2, ptrfifo
-ADD    DW#2, ptrdb
 FIFO_PUSH    _CAM2RES
 OR(
 LD    TRUE
@@ -236,12 +226,7 @@ MOVE    _FIFOSIZE, _FIFOS
 AND(
 LD    TRUE
 GT    _FIFOSIZE, 0
-MOVE    _FIFOSIZE, *VD5016
 FIFO_POP    1, ATADO, _POPSIZE
-MOVE    ATADO, *VD5012
-MUL    I#-1, *VD5012
-ADD    DW#2, ptrfifo
-ADD    DW#2, ptrdb
 OR(
 LD    TRUE
 EQ    _FIFOS, 0
@@ -265,46 +250,6 @@ MOVE    ÁTADNIVALO, SPIRALON
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5
 (* Network 24 *)
-(*0db Csomagológépnek bitek átadása*)
-LD    TRUE
-EQ    SPIRALON, I#0
-R_TRIG
-R    %M40.3
-R    %M40.4
-R    %M40.5
-(* Network 25 *)
-(*1db Csomagológépnek bitek átadása*)
-LD    TRUE
-EQ    SPIRALON, I#1
-R_TRIG
-S    %M40.3
-R    %M40.4
-R    %M40.5
-(* Network 26 *)
-(*2db Csomagológépnek bitek átadása*)
-LD    TRUE
-EQ    SPIRALON, I#2
-R_TRIG
-R    %M40.3
-S    %M40.4
-R    %M40.5
-(* Network 27 *)
-(*3db Csomagológépnek bitek átadása*)
-LD    TRUE
-EQ    SPIRALON, I#3
-R_TRIG
-R    %M40.3
-R    %M40.4
-S    %M40.5
-(* Network 28 *)
-(*>4db Csomagológépnek bitek átadása*)
-LD    TRUE
-GE    SPIRALON, I#4
-R_TRIG
-S    %M40.3
-S    %M40.4
-S    %M40.5
-(* Network 29 *)
 (*TESZT üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
 LD    FALSE
 AND    %M52.0
@@ -317,11 +262,11 @@ AND    %M300.0
 ANDN    %M200.3
 )
 ST   %M300.0
-(* Network 30 *)
+(* Network 25 *)
 LD    FALSE
 AND    %M300.0
 ST   %M100.3
-(* Network 31 *)
+(* Network 26 *)
 LD    %M52.0
 AND(
 LDN    %M300.0
@@ -333,28 +278,28 @@ OR    %M52.1
 ADD    LEDOBVA, BLENDEN
 )
 )
-(* Network 32 *)
+(* Network 27 *)
 LD    %M52.1
 F_TRIG
 OR    %M40.6
 MOVE    0, BLENDEN
-(* Network 33 *)
+(* Network 28 *)
 LD    TRUE
 GT    BLENDEN, 15
 ST   %M200.5
-(* Network 34 *)
+(* Network 29 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.4
 R_TRIG
 S    %M30.6
-(* Network 35 *)
+(* Network 30 *)
 LD    %M30.4
 TON   T30, 4
 __CR_EQ_1
 MOVE    T30, atblowtimer
 __CR_RESTORE
 R    %M30.4
-(* Network 36 *)
+(* Network 31 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
 TON   T24, blowdura
@@ -362,7 +307,7 @@ __CR_EQ_1
 MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
-(* Network 37 *)
+(* Network 32 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
@@ -370,53 +315,27 @@ MOVE    0, SPIRALON
 MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
-(* Network 38 *)
+(* Network 33 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
 MOVE    0, SUMCOUNT
 MOVE    0, SUMOUT
-(* Network 39 *)
-LD    %SM0.0
-MOVE    &VW458, %VD460
-GT    ptrdb, %VD460
-OR    %M50.5
-ST   %M50.6
-(* Network 40 *)
-(*Kamera bírálatok történetének törlése*)
-LD    %M50.2
-OR    %M50.6
-R_TRIG
-FILL  B#0, %VB500, B#60
-FILL  B#0, %VB400, B#60
-MOVE    &VW400, ptrdb
-MOVE    &VW500, ptrfifo
-(* Network 41 *)
-(*Felsõ szalag puffer és elemszám törlés HMI-rõl*)
-LD    %M30.2
-FILL  B#0, %VB2500, B#10
-FILL  B#0, %VB2520, B#10
-MOVE    0, FIFO_ELEMEK
-(* Network 42 *)
+(* Network 34 *)
 LD    %M31.0
 MOVE    0, TRIGTOUT
-(* Network 43 *)
+(* Network 35 *)
 LD    %M31.5
 R_TRIG
 FIFO_INIT
-(* Network 44 *)
-LD    %M53.0
-MOVE    0, campush
-MOVE    0, pushpush
-MOVE    0, spinpop
-(* Network 45 *)
+(* Network 36 *)
 LD    %SM0.0
 MOVE    %SMB6, scantime
-(* Network 46 *)
+(* Network 37 *)
 LD    %M50.3
 AND    %M40.2
 R_TRIG
 S    %M50.4
-(* Network 47 *)
+(* Network 38 *)
 LDN    %M50.3
 ORN    %M40.2
 TON   T39, I#1000
@@ -424,14 +343,27 @@ __CR_EQ_1
 MOVE    T39, _t39
 __CR_RESTORE
 ST   %BR0.0
-(* Network 48 *)
+(* Network 39 *)
 LDN    %M40.6
 AND    T39
 R_TRIG
 R    %M50.4
-(* Network 49 *)
+(* Network 40 *)
 (*Idõszakos home-ingolása a spiralmotornak*)
-LD    FALSE
+LD    %M30.3
+OR(
+LD    _lastpush
+ANDN    %M30.3
+)
+(* Network 41 *)
+LDN    %M30.3
+TON   T44, 10
+__CR_EQ_1
+MOVE    T44, _t44
+__CR_RESTORE
+ST   %BR0.0
+(* Network 42 *)
+LD    TRUE
 AND    %M50.3
 ANDN    _homing
 TON   T41, 100
@@ -439,11 +371,11 @@ __CR_EQ_1
 MOVE    T41, _t41
 __CR_RESTORE
 ST   %M54.0
-(* Network 50 *)
-LD    FALSE
+(* Network 43 *)
+LD    TRUE
 AND(
 LD    %M54.0
-EQ    FIFO_ELEMEK, 0
+AND    T44
 R_TRIG
 OR(
 LD    _homing
@@ -451,27 +383,39 @@ ANDN    T43
 )
 )
 ST   _homing
-(* Network 51 *)
+(* Network 44 *)
 LD    _homing
 R_TRIG
 ST   %M53.7
-(* Network 52 *)
+(* Network 45 *)
 LD    _homing
 TON   T42, 5
 __CR_EQ_1
 MOVE    T42, _t42
 __CR_RESTORE
 R_TRIG
-OR    %M54.1
+OR(
+LD    %M54.1
+ANDN    T43
+)
 ST   %M54.1
-(* Network 53 *)
+(* Network 46 *)
 LD    %M54.1
 TON   T43, 1
 __CR_EQ_1
-MOVE    T43, _t42
+MOVE    T43, _t43
 __CR_RESTORE
+OR    %M50.5
+AND(
+LDN    %M52.1
+ADD    SPIRALON, SUMOUT
+OR(
+LD    %M52.1
+ADD    SPIRALON, BLENDEN
+)
+)
 MOVE    0, SPIRALON
-(* Network 54 *)
+(* Network 47 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08

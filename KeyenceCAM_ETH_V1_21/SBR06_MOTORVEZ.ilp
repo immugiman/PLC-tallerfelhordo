@@ -8,6 +8,7 @@ S    %M31.6
 (* Network 1 *)
 LD    TRUE
 PREL    0, MOTSTART, %VW250, %VD252, %VW256, %VD258, %M31.7, %M32.1, %MB33
+R    %M31.6
 (* Network 2 *)
 (*Automata pörgetés teszteléshez, HMI-rõl aktiválva*)
 LDN    T13

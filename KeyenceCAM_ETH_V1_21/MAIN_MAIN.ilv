@@ -27,4 +27,7 @@ VAR
     _t41  AT  %LW178 : INT ; (*  *) 
     _homing  AT  %L167.7 : BOOL ; (* homing folyamatban *) 
     _t42  AT  %LW180 : INT ; (* homing utáni leadásjel a csomigep felé késleltetve *) 
+    _t43  AT  %LW182 : INT ; (*  *) 
+    _lastpush  AT  %L184.0 : BOOL ; (* utolsó push mérése *) 
+    _t44  AT  %LW186 : INT ; (*  *) 
 END_VAR

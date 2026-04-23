@@ -28,6 +28,7 @@ ST   %Q3.7
 (* Network 8 *)
 (*LEADAS jel kitartása 100ms*)
 LD    %M52.0
+OR    %M50.5
 OR(
 LD    %M54.1
 R_TRIG
@@ -38,11 +39,51 @@ MOVE    T40, _t40
 __CR_RESTORE
 ST   %Q1.3
 (* Network 9 *)
+(*0db Csomagológépnek bitek átadása*)
+LD    TRUE
+EQ    SPIRALON, I#0
+R_TRIG
+R    %M40.3
+R    %M40.4
+R    %M40.5
+(* Network 10 *)
+(*1db Csomagológépnek bitek átadása*)
+LD    TRUE
+EQ    SPIRALON, I#1
+R_TRIG
+S    %M40.3
+R    %M40.4
+R    %M40.5
+(* Network 11 *)
+(*2db Csomagológépnek bitek átadása*)
+LD    TRUE
+EQ    SPIRALON, I#2
+R_TRIG
+R    %M40.3
+S    %M40.4
+R    %M40.5
+(* Network 12 *)
+(*3db Csomagológépnek bitek átadása*)
+LD    TRUE
+EQ    SPIRALON, I#3
+R_TRIG
+R    %M40.3
+R    %M40.4
+S    %M40.5
+(* Network 13 *)
+(*>4db Csomagológépnek bitek átadása*)
+LD    TRUE
+GE    SPIRALON, I#4
+R_TRIG
+S    %M40.3
+S    %M40.4
+S    %M40.5
+(* Network 14 *)
 LD    %M40.3
 ST   %Q1.4
-(* Network 10 *)
+(* Network 15 *)
 LD    %M40.4
 ST   %Q1.5
-(* Network 11 *)
+(* Network 16 *)
 LD    %M40.5
 ST   %Q1.6
