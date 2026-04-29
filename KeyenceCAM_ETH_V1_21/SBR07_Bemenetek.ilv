@@ -2,4 +2,10 @@ VAR
     t_etalpos  AT  %LW58 : INT ; (*  *) 
     t_etalrec  AT  %LW60 : INT ; (*  *) 
     t_spintrig  AT  %LW176 : INT ; (*  *) 
+    t_pushfilter  AT  %LW188 : INT ; (*  *) 
+    pushfilter  AT  %L184.1 : BOOL ; (*  *) 
+    _t8  AT  %LW190 : INT ; (*  *) 
+    _tr_to_pu  AT  %L184.2 : BOOL ; (* Trigger és push közti idõ mérésére *) 
+    _t9  AT  %LW192 : INT ; (*  *) 
+    _IN_TRIG  AT  %L184.3 : BOOL ; (*  *) 
 END_VAR

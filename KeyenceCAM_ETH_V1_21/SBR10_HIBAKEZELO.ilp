@@ -4,6 +4,10 @@
 LDN    %M40.0
 ANDN    %M40.1
 ANDN    %M200.7
+AND(
+LDN    %M200.5
+ORN    %M201.3
+)
 ST   %M40.2
 (* Network 1 *)
 (*Ezek a torlódás lámpát kapcsolják a szalag HMI-n*)

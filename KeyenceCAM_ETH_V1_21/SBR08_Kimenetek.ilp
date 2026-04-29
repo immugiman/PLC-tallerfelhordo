@@ -16,6 +16,7 @@ ST   %Q0.2
 LD    %M100.2
 ST   %Q0.3
 (* Network 5 *)
+(*Szalagrendszer saját blende kimenete teszteléshez*)
 LD    %M100.3
 ST   %Q0.4
 (* Network 6 *)
@@ -23,6 +24,7 @@ ST   %Q0.4
 LD    %M30.6
 ST   %Q1.1
 (* Network 7 *)
+(*Csomagoló felé*)
 LD    %M40.2
 ST   %Q3.7
 (* Network 8 *)

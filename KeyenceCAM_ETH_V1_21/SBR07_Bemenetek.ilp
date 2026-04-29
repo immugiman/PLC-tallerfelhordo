@@ -1,60 +1,119 @@
 (*2*)
 (* Network 0 *)
+LD    %I0.4
+AND    %M50.3
+ST   _IN_TRIG
+(* Network 1 *)
+(*Minden második triggerre fotózunk*)
+LD    _IN_TRIG
+ANDN    %M54.2
+CTU   C1, C1, 2
+__CR_EQ_1
+MOVE    C1, count
+__CR_RESTORE
+ST   %BR0.0
+(* Network 2 *)
+(*Trigger jelet 170ms-ig kimaszkolni*)
+LD    _IN_TRIG
+OR(
+LD    %M54.2
+ANDN    T8
+)
+ST   %M54.2
+(* Network 3 *)
+(*Trigger és PUSH közti idõkülönbség méréséhez*)
+LD    _IN_TRIG
+R_TRIG
+OR(
+LD    _tr_to_pu
+ANDN    %M30.3
+)
+ST   _tr_to_pu
+(* Network 4 *)
+(*Trigger to PUSH delta T mérése, és kijelzése*)
+LD    _tr_to_pu
+MOVE    _t9, TtoPDelta
+TON   T9, 100
+__CR_EQ_1
+MOVE    T9, _t9
+__CR_RESTORE
+ST   %BR0.0
+(* Network 5 *)
+LD    _tr_to_pu
+F_TRIG
+MOVE    TtoPDelta, lastTtP
+(* Network 6 *)
+(*Trigger mask timer*)
+LD    %M54.2
+TON   T8, 17
+__CR_EQ_1
+MOVE    T8, _t8
+__CR_RESTORE
+ST   %BR0.0
+(* Network 7 *)
 LD    %I0.5
 ST   %M150.0
-(* Network 1 *)
+(* Network 8 *)
 LD    %M150.0
 R_TRIG
 AND    %M35.5
 ST   %M52.0
-(* Network 2 *)
+(* Network 9 *)
 LD    %M150.0
 TON   T7, 10
 __CR_EQ_1
 MOVE    T7, t_spintrig
 __CR_RESTORE
 ST   %M200.7
-(* Network 3 *)
-(*100ms-ig szûri a bejövõ jelet*)
+(* Network 10 *)
 LD    %I0.6
 R_TRIG
 ST   %M30.3
-(* Network 4 *)
+(* Network 11 *)
+LD    %M30.3
+R_TRIG
+TOF   T14, 10
+__CR_EQ_1
+MOVE    T14, t_pushfilter
+__CR_RESTORE
+ST   pushfilter
+(* Network 12 *)
 LD    %I0.6
 F_TRIG
 ST   %M53.6
-(* Network 5 *)
+(* Network 13 *)
 LD    %M30.3
 OR(
 LD    %M53.5
 ANDN    %M53.6
 )
 ST   %M53.5
-(* Network 6 *)
+(* Network 14 *)
 (*Átfújt tallér megérkezett*)
 LD    %I1.4
 ST   %M36.0
-(* Network 7 *)
+(* Network 15 *)
 LD    %M36.0
 TON   T28, 3
 __CR_EQ_1
 MOVE    T28, t_etalrec
 __CR_RESTORE
 ST   %M36.2
-(* Network 8 *)
+(* Network 16 *)
 (*Egalizáló szalag végén áll egy tallér*)
 LD    %I1.5
 ST   %M36.1
-(* Network 9 *)
+(* Network 17 *)
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
 MOVE    T29, t_etalpos
 __CR_RESTORE
 ST   %M36.3
-(* Network 10 *)
+(* Network 18 *)
 LD    %I2.3
 ANDN    %M40.6
+AND    %M201.1
 OR(
 LD    %M40.6
 AND    %M201.0
@@ -62,11 +121,11 @@ AND    %M201.0
 ANDN    %M200.5
 ANDN    %M400.0
 ST   %M50.3
-(* Network 11 *)
+(* Network 19 *)
 LD    %I2.0
 ANDN    %M40.6
 ST   %M200.0
-(* Network 12 *)
+(* Network 20 *)
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1
