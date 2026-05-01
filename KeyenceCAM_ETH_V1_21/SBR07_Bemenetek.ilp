@@ -2,16 +2,23 @@
 (* Network 0 *)
 LD    %I0.4
 AND    %M50.3
+ANDN    %M54.2
+R_TRIG
 ST   _IN_TRIG
 (* Network 1 *)
 (*Minden második triggerre fotózunk*)
 LD    _IN_TRIG
-ANDN    %M54.2
+AND(
+LD    TRUE
 CTU   C1, C1, 2
 __CR_EQ_1
 MOVE    C1, count
 __CR_RESTORE
-ST   %BR0.0
+OR(
+LD    TRUE
+WSFL    ZEROW, %VW2800, 5, 1
+)
+)
 (* Network 2 *)
 (*Trigger jelet 170ms-ig kimaszkolni*)
 LD    _IN_TRIG
