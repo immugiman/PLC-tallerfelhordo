@@ -7,21 +7,21 @@ R_TRIG
 ST   _IN_TRIG
 (* Network 1 *)
 (*Minden második triggerre fotózunk*)
-LD    _IN_TRIG
+LD    %L184.3
 AND(
 LD    TRUE
 CTU   C1, C1, 2
 __CR_EQ_1
-MOVE    C1, count
+MOVE    C1, %VW350
 __CR_RESTORE
 OR(
 LD    TRUE
-WSFL    ZEROW, %VW2800, 5, 1
+WSFL    %VW634, %VW2800, 10, 1
 )
 )
 (* Network 2 *)
 (*Trigger jelet 170ms-ig kimaszkolni*)
-LD    _IN_TRIG
+LD    %L184.3
 OR(
 LD    %M54.2
 ANDN    T8
@@ -29,13 +29,13 @@ ANDN    T8
 ST   %M54.2
 (* Network 3 *)
 (*Trigger és PUSH közti idõkülönbség méréséhez*)
-LD    _IN_TRIG
+LD    %L184.3
 R_TRIG
 OR(
-LD    _tr_to_pu
+LD    %L184.2
 ANDN    %M30.3
 )
-ST   _tr_to_pu
+ST   %L184.2
 (* Network 4 *)
 (*Trigger to PUSH delta T mérése, és kijelzése*)
 LD    _tr_to_pu

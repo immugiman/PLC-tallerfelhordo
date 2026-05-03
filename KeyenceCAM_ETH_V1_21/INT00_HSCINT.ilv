@@ -1,3 +1,4 @@
 VAR
     NULLA  AT  %LW112 : INT ; (*  *) 
+    VARAKOZAS  AT  %LB185 : BYTE ; (*  *) 
 END_VAR

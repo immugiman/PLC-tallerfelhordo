@@ -9,26 +9,26 @@ HSC    0
 (* Network 1 *)
 LD    %SM0.0
 ANDN    %M53.4
-WSFL    NULLA, SZALAGMEMO, 50, 1
+WSFL    NULLA, SZALAGMEMO, 61, 1
 (* Network 2 *)
 (*FIFO STACK-ek kezdeti címeiek betöltése a pointerekbe.*)
 LD    %SM0.0
 AND    %M53.4
-WSFL    ATADO, SZALAGMEMO, 50, 1
+WSFL    ATADO, SZALAGMEMO, 61, 1
 R    %M53.4
 (* Network 3 *)
 (*Spirálba átadásra vár*)
 LD    %SM0.0
-GT    %VW2698, I#0
-MOVE    %VW2698, ÁTADNIVALO
-MOVE    W#0, %VW2698
-MOVE    B#0, %VB2702
+GT    %VW2720, I#0
+MOVE    %VW2720, ÁTADNIVALO
+MOVE    W#0, %VW2720
+MOVE    B#0, VARAKOZAS
 S    %M35.5
 (* Network 4 *)
 (**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
 LD    %M35.5
-INC    %VB2702
-GT    %VB2702, %VB624
+INC    VARAKOZAS
+GT    VARAKOZAS, %VB624
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5
 (* Network 5 *)

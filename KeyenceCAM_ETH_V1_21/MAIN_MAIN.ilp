@@ -168,10 +168,10 @@ LD    %M30.3
 R_TRIG
 AND(
 LD    TRUE
-MOVE    nextpush, ATADO
+MOVE    %VW2804, ATADO
 OR(
 LD    TRUE
-EQ    nextpush, 0
+EQ    %VW2804, 0
 INC    emptyfifo_cnt
 )
 )
@@ -239,33 +239,33 @@ S    %M30.6
 LD    %M30.4
 TON   T30, 4
 __CR_EQ_1
-MOVE    T30, atblowtimer
+MOVE    T30, %VW626
 __CR_RESTORE
 R    %M30.4
 (* Network 28 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, blowdura
+TON   T24, %VW622
 __CR_EQ_1
-MOVE    T24, blowtimer
+MOVE    T24, %VW336
 __CR_RESTORE
 R    %M30.6
 (* Network 29 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
-MOVE    0, SPIRALON
-MOVE    0, BLENDEN
+MOVE    0, %VW372
+MOVE    0, %VW374
 ST   %M30.1
 S    %M31.6
 (* Network 30 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
-MOVE    0, SUMCOUNT
-MOVE    0, SUMOUT
+MOVE    0, %VW310
+MOVE    0, %VW340
 (* Network 31 *)
 LD    %M31.0
-MOVE    0, TRIGTOUT
+MOVE    0, %VW328
 (* Network 32 *)
 LD    %M31.5
 R_TRIG
@@ -273,7 +273,7 @@ FIFO_INIT
 (* Network 33 *)
 (*PLC Scantime betöltése*)
 LD    %SM0.0
-MOVE    %SMB6, scantime
+MOVE    %SMB6, %VB600
 (* Network 34 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LD    %M50.3
@@ -286,7 +286,7 @@ LDN    %M50.3
 ORN    %M40.2
 TON   T39, I#1000
 __CR_EQ_1
-MOVE    T39, _t39
+MOVE    T39, %LW172
 __CR_RESTORE
 ST   %BR0.0
 (* Network 36 *)
@@ -299,7 +299,7 @@ R    %M50.4
 (*Idõszakos homing-olása a spiralmotornak*)
 LD    %M30.3
 OR(
-LD    _lastpush
+LD    %L184.0
 ANDN    %M30.3
 )
 (* Network 38 *)
@@ -307,17 +307,17 @@ ANDN    %M30.3
 LDN    %M30.3
 TON   T44, 10
 __CR_EQ_1
-MOVE    T44, _t44
+MOVE    T44, %LW186
 __CR_RESTORE
 ST   %BR0.0
 (* Network 39 *)
 (*Idõszakos homing-olás*)
 LD    %M201.2
 AND    %M50.3
-ANDN    _homing
-TON   T41, homeinterval
+ANDN    %L167.7
+TON   T41, %VW312
 __CR_EQ_1
-MOVE    T41, _t41
+MOVE    T41, %LW178
 __CR_RESTORE
 ST   %M54.0
 (* Network 40 *)
@@ -326,21 +326,21 @@ LD    %M54.0
 AND    T44
 R_TRIG
 OR(
-LD    _homing
+LD    %L167.7
 ANDN    T43
 )
-ST   _homing
+ST   %L167.7
 (* Network 41 *)
 (*Idõszakos homing-olás*)
-LD    _homing
+LD    %L167.7
 R_TRIG
 ST   %M53.7
 (* Network 42 *)
 (*Idõszakos homing-olásHoming generál egy leadást*)
-LD    _homing
+LD    %L167.7
 TON   T42, 5
 __CR_EQ_1
-MOVE    T42, _t42
+MOVE    T42, %LW180
 __CR_RESTORE
 R_TRIG
 OR(
@@ -353,18 +353,18 @@ ST   %M54.1
 LD    %M54.1
 TON   T43, 1
 __CR_EQ_1
-MOVE    T43, _t43
+MOVE    T43, %LW182
 __CR_RESTORE
 OR    %M50.5
 AND(
 LDN    %M52.1
-ADD    SPIRALON, SUMOUT
+ADD    %VW372, %VW340
 OR(
 LD    %M52.1
-ADD    SPIRALON, BLENDEN
+ADD    %VW372, %VW374
 )
 )
-MOVE    0, SPIRALON
+MOVE    0, %VW372
 (* Network 44 *)
 LD    TRUE
 CAL    SBR10
