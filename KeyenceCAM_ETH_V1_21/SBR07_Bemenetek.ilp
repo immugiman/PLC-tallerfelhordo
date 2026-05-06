@@ -7,21 +7,21 @@ R_TRIG
 ST   _IN_TRIG
 (* Network 1 *)
 (*Minden második triggerre fotózunk*)
-LD    %L184.3
+LD    _IN_TRIG
 AND(
 LD    TRUE
 CTU   C1, C1, 2
 __CR_EQ_1
-MOVE    C1, %VW350
+MOVE    C1, count
 __CR_RESTORE
 OR(
 LD    TRUE
-WSFL    %VW634, %VW2800, 10, 1
+WSFL    ZEROW, %VW2800, 10, 1
 )
 )
 (* Network 2 *)
-(*Trigger jelet 170ms-ig kimaszkolni*)
-LD    %L184.3
+(*Trigger jelet 160ms-ig kimaszkolni*)
+LD    _IN_TRIG
 OR(
 LD    %M54.2
 ANDN    T8
@@ -29,13 +29,13 @@ ANDN    T8
 ST   %M54.2
 (* Network 3 *)
 (*Trigger és PUSH közti idõkülönbség méréséhez*)
-LD    %L184.3
+LD    _IN_TRIG
 R_TRIG
 OR(
-LD    %L184.2
+LD    _tr_to_pu
 ANDN    %M30.3
 )
-ST   %L184.2
+ST   _tr_to_pu
 (* Network 4 *)
 (*Trigger to PUSH delta T mérése, és kijelzése*)
 LD    _tr_to_pu
@@ -52,7 +52,7 @@ MOVE    TtoPDelta, lastTtP
 (* Network 6 *)
 (*Trigger mask timer*)
 LD    %M54.2
-TON   T8, 17
+TON   T8, 16
 __CR_EQ_1
 MOVE    T8, _t8
 __CR_RESTORE
@@ -77,47 +77,39 @@ LD    %I0.6
 R_TRIG
 ST   %M30.3
 (* Network 11 *)
-LD    %M30.3
-R_TRIG
-TOF   T14, 10
-__CR_EQ_1
-MOVE    T14, t_pushfilter
-__CR_RESTORE
-ST   pushfilter
-(* Network 12 *)
 LD    %I0.6
 F_TRIG
 ST   %M53.6
-(* Network 13 *)
+(* Network 12 *)
 LD    %M30.3
 OR(
 LD    %M53.5
 ANDN    %M53.6
 )
 ST   %M53.5
-(* Network 14 *)
+(* Network 13 *)
 (*Átfújt tallér megérkezett*)
 LD    %I1.4
 ST   %M36.0
-(* Network 15 *)
+(* Network 14 *)
 LD    %M36.0
 TON   T28, 3
 __CR_EQ_1
 MOVE    T28, t_etalrec
 __CR_RESTORE
 ST   %M36.2
-(* Network 16 *)
+(* Network 15 *)
 (*Egalizáló szalag végén áll egy tallér*)
 LD    %I1.5
 ST   %M36.1
-(* Network 17 *)
+(* Network 16 *)
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
 MOVE    T29, t_etalpos
 __CR_RESTORE
 ST   %M36.3
-(* Network 18 *)
+(* Network 17 *)
 LD    %I2.3
 ANDN    %M40.6
 AND    %M201.1
@@ -128,11 +120,11 @@ AND    %M201.0
 ANDN    %M200.5
 ANDN    %M400.0
 ST   %M50.3
-(* Network 19 *)
+(* Network 18 *)
 LD    %I2.0
 ANDN    %M40.6
 ST   %M200.0
-(* Network 20 *)
+(* Network 19 *)
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1

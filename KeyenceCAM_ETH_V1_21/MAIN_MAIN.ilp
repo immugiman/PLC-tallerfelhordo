@@ -168,11 +168,12 @@ LD    %M30.3
 R_TRIG
 AND(
 LD    TRUE
-MOVE    %VW2804, ATADO
-OR(
-LD    TRUE
 EQ    %VW2804, 0
 INC    emptyfifo_cnt
+OR(
+LD    TRUE
+MOVE    %VW2804, ATADO
+MOVE    I#0, %VW2804
 )
 )
 S    %M53.4
@@ -186,7 +187,6 @@ INC    tulmeretesek
 (* Network 20 *)
 (*##### LEDOBÁS SPIRÁLBA #####Itt azt is ellenõrizhetjük, hogy az utolsó elem valóban elérhette az spirál érzékelõjét.*)
 LD    %M52.0
-AND    %M35.5
 MOVE    SPIRALON, LEDOBVA
 MOVE    ÁTADNIVALO, SPIRALON
 MOVE    I#0, ÁTADNIVALO
@@ -211,12 +211,20 @@ ST   %M100.3
 (* Network 23 *)
 LD    %M52.0
 AND(
-LDN    %M300.0
-ORN    %M52.1
+LD    %M40.6
+ANDN    %M300.0
+OR(
+LDN    %M40.6
+ANDN    %M52.1
+)
 ADD    LEDOBVA, SUMOUT
 OR(
-LD    %M300.0
-OR    %M52.1
+LD    %M40.6
+AND    %M300.0
+OR(
+LDN    %M40.6
+AND    %M52.1
+)
 ADD    LEDOBVA, BLENDEN
 )
 )
@@ -239,108 +247,97 @@ S    %M30.6
 LD    %M30.4
 TON   T30, 4
 __CR_EQ_1
-MOVE    T30, %VW626
+MOVE    T30, atblowtimer
 __CR_RESTORE
 R    %M30.4
 (* Network 28 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, %VW622
+TON   T24, blowdura
 __CR_EQ_1
-MOVE    T24, %VW336
+MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
 (* Network 29 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
-MOVE    0, %VW372
-MOVE    0, %VW374
+MOVE    0, SPIRALON
+MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
 (* Network 30 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
-MOVE    0, %VW310
-MOVE    0, %VW340
+MOVE    0, SUMCOUNT
+MOVE    0, SUMOUT
 (* Network 31 *)
 LD    %M31.0
-MOVE    0, %VW328
+MOVE    0, TRIGTOUT
 (* Network 32 *)
-LD    %M31.5
-R_TRIG
-FIFO_INIT
-(* Network 33 *)
 (*PLC Scantime betöltése*)
 LD    %SM0.0
-MOVE    %SMB6, %VB600
-(* Network 34 *)
+MOVE    %SMB6, scantime
+(* Network 33 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LD    %M50.3
 AND    %M40.2
 R_TRIG
 S    %M50.4
-(* Network 35 *)
+(* Network 34 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LDN    %M50.3
 ORN    %M40.2
 TON   T39, I#1000
 __CR_EQ_1
-MOVE    T39, %LW172
+MOVE    T39, _t39
 __CR_RESTORE
 ST   %BR0.0
-(* Network 36 *)
+(* Network 35 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LDN    %M40.6
 AND    T39
 R_TRIG
 R    %M50.4
-(* Network 37 *)
-(*Idõszakos homing-olása a spiralmotornak*)
-LD    %M30.3
-OR(
-LD    %L184.0
-ANDN    %M30.3
-)
-(* Network 38 *)
+(* Network 36 *)
 (*Idõszakos homing-olás*)
 LDN    %M30.3
 TON   T44, 10
 __CR_EQ_1
-MOVE    T44, %LW186
+MOVE    T44, _t44
 __CR_RESTORE
 ST   %BR0.0
-(* Network 39 *)
+(* Network 37 *)
 (*Idõszakos homing-olás*)
 LD    %M201.2
 AND    %M50.3
-ANDN    %L167.7
-TON   T41, %VW312
+ANDN    _homing
+TON   T41, homeinterval
 __CR_EQ_1
-MOVE    T41, %LW178
+MOVE    T41, _t41
 __CR_RESTORE
 ST   %M54.0
-(* Network 40 *)
+(* Network 38 *)
 (*Idõszakos homing-olás*)
 LD    %M54.0
 AND    T44
 R_TRIG
 OR(
-LD    %L167.7
+LD    _homing
 ANDN    T43
 )
-ST   %L167.7
-(* Network 41 *)
+ST   _homing
+(* Network 39 *)
 (*Idõszakos homing-olás*)
-LD    %L167.7
+LD    _homing
 R_TRIG
 ST   %M53.7
-(* Network 42 *)
+(* Network 40 *)
 (*Idõszakos homing-olásHoming generál egy leadást*)
-LD    %L167.7
+LD    _homing
 TON   T42, 5
 __CR_EQ_1
-MOVE    T42, %LW180
+MOVE    T42, _t42
 __CR_RESTORE
 R_TRIG
 OR(
@@ -348,24 +345,24 @@ LD    %M54.1
 ANDN    T43
 )
 ST   %M54.1
-(* Network 43 *)
+(* Network 41 *)
 (*Spirálból sumout-ba, vagy belndébe kerül a spirálon lévõ tallérszám, nullázás és homing következtében.*)
 LD    %M54.1
 TON   T43, 1
 __CR_EQ_1
-MOVE    T43, %LW182
+MOVE    T43, _t43
 __CR_RESTORE
 OR    %M50.5
 AND(
 LDN    %M52.1
-ADD    %VW372, %VW340
+ADD    SPIRALON, SUMOUT
 OR(
 LD    %M52.1
-ADD    %VW372, %VW374
+ADD    SPIRALON, BLENDEN
 )
 )
-MOVE    0, %VW372
-(* Network 44 *)
+MOVE    0, SPIRALON
+(* Network 42 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08

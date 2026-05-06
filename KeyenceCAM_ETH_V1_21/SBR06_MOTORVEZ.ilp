@@ -27,28 +27,23 @@ R_TRIG
 )
 S    %M31.6
 (* Network 4 *)
-LD    %M31.7
-R_TRIG
-AND    %M31.6
-R    %M31.6
-(* Network 5 *)
 LD    %M53.7
 OR(
 LD    IN_homing
 ANDN    FIN_jogtoorigin
 )
 ST   IN_homing
-(* Network 6 *)
+(* Network 5 *)
 LD    IN_homing
 R_TRIG
 R    DONE
 R    DONE2
-(* Network 7 *)
+(* Network 6 *)
 (*HOME pozíció keresése*)
 LD    IN_homing
 ANDN    FIN_findhome
 ST   IN_findhome
-(* Network 8 *)
+(* Network 7 *)
 (*HOME pozíció keresése*)
 LD    IN_homing
 AND    IN_findhome
@@ -59,13 +54,13 @@ LD    IN_homing
 AND    FIN_findhome
 )
 ST   FIN_findhome
-(* Network 9 *)
+(* Network 8 *)
 (*HOME->ORIGIN*)
 LD    IN_homing
 AND    FIN_findhome
 ANDN    FIN_jogtoorigin
 ST   IN_jogtoorigin
-(* Network 10 *)
+(* Network 9 *)
 (*HOME->ORIGIN*)
 LD    IN_homing
 AND    IN_jogtoorigin
@@ -76,19 +71,19 @@ LD    IN_homing
 AND    FIN_jogtoorigin
 )
 ST   FIN_jogtoorigin
-(* Network 11 *)
+(* Network 10 *)
 LD    %I0.7
 R_TRIG
 ST   HOMET
-(* Network 12 *)
+(* Network 11 *)
 (*Nullpont keresés spirál motor*)
 LD    TRUE
 PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#1000, W#50, DONE, ERR, ERRID
-(* Network 13 *)
+(* Network 12 *)
 (*kezdõ pozíció felvétele a nullponttól számítva negyed fordulat*)
 LD    TRUE
 PREL    0, IN_jogtoorigin, W#200, DW#1000, W#500, DI#50, DONE2, ERR2, ERRID2
-(* Network 14 *)
+(* Network 13 *)
 (*Egalizáló tallér szállító szalag*)
 LD    TRUE
 PJOG    1, motor2, DW#600, I#0, DONE3, ERR3, ERRID3
