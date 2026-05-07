@@ -5,12 +5,12 @@ LDN    %M40.0
 ANDN    %M40.1
 ANDN    %M200.7
 AND(
-LDN    %M200.5
+LDN    %M400.0
 ORN    %M201.3
 )
 ST   %M40.2
 (* Network 1 *)
 (*Ezek a torlódás lámpát kapcsolják a szalag HMI-n*)
-LD    %M200.5
-OR    %M200.7
+LD    %M200.7
+OR    %M40.7
 ST   %M400.0

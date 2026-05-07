@@ -6,4 +6,9 @@ VAR
     _tr_to_pu  AT  %L184.2 : BOOL ; (* Trigger és push közti idõ mérésére *) 
     _t9  AT  %LW192 : INT ; (*  *) 
     _IN_TRIG  AT  %L184.3 : BOOL ; (*  *) 
+    _t45  AT  %LW188 : INT ; (*  *) 
+    _t46  AT  %LW194 : INT ; (*  *) 
+    _t46kitart  AT  %L184.1 : BOOL ; (*  *) 
+    _blendetelefel  AT  %L184.4 : BOOL ; (*  *) 
+    _blendetelele  AT  %L184.5 : BOOL ; (*  *) 
 END_VAR

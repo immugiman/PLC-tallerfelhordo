@@ -117,7 +117,6 @@ OR(
 LD    %M40.6
 AND    %M201.0
 )
-ANDN    %M200.5
 ANDN    %M400.0
 ST   %M50.3
 (* Network 18 *)
@@ -128,3 +127,24 @@ ST   %M200.0
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1
+(* Network 20 *)
+LDN    %I1.6
+TON   T46, I#10
+__CR_EQ_1
+MOVE    T46, _t46
+__CR_RESTORE
+ST   _blendetelele
+(* Network 21 *)
+LD    %I1.6
+TON   T45, I#10
+__CR_EQ_1
+MOVE    T45, _t45
+__CR_RESTORE
+ST   _blendetelefel
+(* Network 22 *)
+LD    _blendetelefel
+OR(
+LD    %M40.7
+ANDN    _blendetelele
+)
+ST   %M40.7
