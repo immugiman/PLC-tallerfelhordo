@@ -4,6 +4,7 @@
 LDN    %M40.0
 ANDN    %M40.1
 ANDN    %M200.7
+ANDN    %M201.5
 AND(
 LDN    %M400.0
 ORN    %M201.3
@@ -14,3 +15,7 @@ ST   %M40.2
 LD    %M200.7
 OR    %M40.7
 ST   %M400.0
+(* Network 2 *)
+LD TRUE
+GT    emptyspin, I#3
+ST   %M201.5

@@ -11,7 +11,6 @@ LD    %SM0.0
 ANDN    %M53.4
 WSFL    NULLA, SZALAGMEMO, 61, 1
 (* Network 2 *)
-(*FIFO STACK-ek kezdeti címeiek betöltése a pointerekbe.*)
 LD    %SM0.0
 AND    %M53.4
 WSFL    ATADO, SZALAGMEMO, 61, 1
