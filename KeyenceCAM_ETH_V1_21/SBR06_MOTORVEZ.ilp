@@ -18,11 +18,16 @@ MOVE    T13, %VW364
 __CR_RESTORE
 ST   %BR0.0
 (* Network 3 *)
-(*Automata pörgetés teszteléshez, HMI-rõl aktiválva*)
+(*Automata pörgetés teszteléshez, HMI-rõl aktiválvaIN_SPIRAL indította korábban, de T2-re lett módosítva, hogy késleltetni lehessen a biztos csomag beérkezés miatt*)
 LD    %M35.0
 AND    T13
 OR(
-LD    %M150.0
+LD    %M201.7
+AND    T2
+OR(
+LDN    %M201.7
+AND    %M150.0
+)
 R_TRIG
 )
 S    %M31.6

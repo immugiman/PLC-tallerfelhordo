@@ -11,4 +11,8 @@ VAR
     _t46kitart  AT  %L184.1 : BOOL ; (*  *) 
     _blendetelefel  AT  %L184.4 : BOOL ; (*  *) 
     _blendetelele  AT  %L184.5 : BOOL ; (*  *) 
+    _spintrigfiltering  AT  %L184.6 : BOOL ; (*  *) 
+    _t14  AT  %LW196 : INT ; (*  *) 
+    _delay_motstart  AT  %L184.7 : BOOL ; (*  *) 
+    _t2  AT  %LW198 : INT ; (*  *) 
 END_VAR

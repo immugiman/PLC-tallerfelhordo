@@ -18,6 +18,8 @@ MOVE    I#0, emptyfifo_cnt
 S    %M201.1
 S    %M201.2
 S    %M201.3
+S    %M201.6
+S    %M201.7
 (* Network 2 *)
 (*Bemenetek beolvasása*)
 LD    TRUE
@@ -114,37 +116,37 @@ S    %M31.4
 (*Kamera triggerelés után, amennyiben 100ms-on belül nem vált magasra a BUSY jel,akkor feltételezhetõ, hogy a kamera nem kapta meg a trigger jelet.*)
 LDN    %M31.4
 AND    %M20.0
-GT    %VW300, 100
+GT    PROCTimer, 100
 R_TRIG
-INC    %VW328
+INC    TRIGTOUT
 (* Network 13 *)
 (*Triggerek közt eltelt idõ számolása*)
 LDN    %Q1.0
 TON   T6, 1000
 __CR_EQ_1
-MOVE    T6, %VW308
+MOVE    T6, Time_TRIG
 __CR_RESTORE
 ST   %BR0.0
 (* Network 14 *)
 (*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.Network 15, 16, 17, 18 A kamerák eredményeit dolgozzák fel, és a pufferba helyezik sorrendben:1. kamera, 2. kamera*)
 LDN    %M40.0
-NE    %LD114, %LD120
-MOVE    %LD120, %LD114
-MOVE    %LD120, %VD352
-MOVE    %LW118, %VW322
-ADD    %LW118, %VW310
-MOVE    %VW300, %VW304
+NE    _CAM1_LASTNR, _CAM1JNR
+MOVE    _CAM1JNR, _CAM1_LASTNR
+MOVE    _CAM1JNR, CAM1JNR
+MOVE    _CAM1RES, CAM1RES
+ADD    _CAM1RES, SUMCOUNT
+MOVE    PROCTimer, Time_TOTAL
 R_TRIG
 S    %M31.1
 (* Network 15 *)
 (*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.*)
 LDN    %M40.1
-NE    %LD142, %LD136
-MOVE    %LD136, %LD142
-MOVE    %LD136, %VD356
-MOVE    %LW134, %VW324
-ADD    %LW134, %VW310
-MOVE    %VW300, %VW304
+NE    _CAM2_LASTNR, _CAM2JNR
+MOVE    _CAM2JNR, _CAM2_LASTNR
+MOVE    _CAM2JNR, CAM2JNR
+MOVE    _CAM2RES, CAM2RES
+ADD    _CAM2RES, SUMCOUNT
+MOVE    PROCTimer, Time_TOTAL
 R_TRIG
 S    %M31.2
 (* Network 16 *)
@@ -218,7 +220,7 @@ OR(
 LDN    %M40.6
 ANDN    %M52.1
 )
-ADD    %VW376, %VW340
+ADD    LEDOBVA, SUMOUT
 OR(
 LD    %M40.6
 AND    %M300.0
@@ -226,14 +228,14 @@ OR(
 LDN    %M40.6
 AND    %M52.1
 )
-ADD    %VW376, %VW374
+ADD    LEDOBVA, BLENDEN
 )
 )
 (* Network 24 *)
 LD    %M52.1
 F_TRIG
 OR    %M40.6
-MOVE    0, %VW374
+MOVE    0, BLENDEN
 (* Network 25 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.4
@@ -244,37 +246,37 @@ S    %M30.6
 LD    %M30.4
 TON   T30, 4
 __CR_EQ_1
-MOVE    T30, %VW626
+MOVE    T30, atblowtimer
 __CR_RESTORE
 R    %M30.4
 (* Network 27 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
-TON   T24, %VW622
+TON   T24, blowdura
 __CR_EQ_1
-MOVE    T24, %VW336
+MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
 (* Network 28 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
-MOVE    0, %VW372
-MOVE    0, %VW374
+MOVE    0, SPIRALON
+MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
 (* Network 29 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
-MOVE    0, %VW310
-MOVE    0, %VW340
+MOVE    0, SUMCOUNT
+MOVE    0, SUMOUT
 (* Network 30 *)
 LD    %M31.0
-MOVE    0, %VW328
+MOVE    0, TRIGTOUT
 (* Network 31 *)
 (*PLC Scantime betöltése*)
 LD    %SM0.0
-MOVE    %SMB6, %VB600
+MOVE    %SMB6, scantime
 (* Network 32 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LD    %M50.3
@@ -287,7 +289,7 @@ LDN    %M50.3
 ORN    %M40.2
 TON   T39, I#1000
 __CR_EQ_1
-MOVE    T39, %LW172
+MOVE    T39, _t39
 __CR_RESTORE
 ST   %BR0.0
 (* Network 34 *)
@@ -301,17 +303,17 @@ R    %M50.4
 LDN    %M30.3
 TON   T44, 10
 __CR_EQ_1
-MOVE    T44, %LW186
+MOVE    T44, _t44
 __CR_RESTORE
 ST   %BR0.0
 (* Network 36 *)
 (*Idõszakos homing-olás*)
 LD    %M201.2
 AND    %M50.3
-ANDN    %L167.7
-TON   T41, %VW312
+ANDN    _homing
+TON   T41, homeinterval
 __CR_EQ_1
-MOVE    T41, %LW178
+MOVE    T41, _t41
 __CR_RESTORE
 ST   %M54.0
 (* Network 37 *)
@@ -320,21 +322,21 @@ LD    %M54.0
 AND    T44
 R_TRIG
 OR(
-LD    %L167.7
+LD    _homing
 ANDN    T43
 )
-ST   %L167.7
+ST   _homing
 (* Network 38 *)
 (*Idõszakos homing-olás*)
-LD    %L167.7
+LD    _homing
 R_TRIG
 ST   %M53.7
 (* Network 39 *)
 (*Idõszakos homing-olásHoming generál egy leadást*)
-LD    %L167.7
+LD    _homing
 TON   T42, 5
 __CR_EQ_1
-MOVE    T42, %LW180
+MOVE    T42, _t42
 __CR_RESTORE
 R_TRIG
 OR(
@@ -347,22 +349,22 @@ ST   %M54.1
 LD    %M54.1
 TON   T43, 1
 __CR_EQ_1
-MOVE    T43, %LW182
+MOVE    T43, _t43
 __CR_RESTORE
 OR    %M50.5
 AND(
 LDN    %M52.1
-ADD    %VW372, %VW340
+ADD    SPIRALON, SUMOUT
 OR(
 LD    %M52.1
-ADD    %VW372, %VW374
+ADD    SPIRALON, BLENDEN
 )
 )
-MOVE    0, %VW372
+MOVE    0, SPIRALON
 (* Network 41 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08
 (* Network 42 *)
 LD    %M201.4
-MOVE    I#0, %VW314
+MOVE    I#0, emptyspin
