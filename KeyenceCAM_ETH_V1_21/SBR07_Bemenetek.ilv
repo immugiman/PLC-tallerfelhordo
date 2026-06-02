@@ -15,4 +15,6 @@ VAR
     _t14  AT  %LW196 : INT ; (*  *) 
     _delay_motstart  AT  %L184.7 : BOOL ; (*  *) 
     _t2  AT  %LW198 : INT ; (*  *) 
+    _t3  AT  %LW200 : INT ; (*  *) 
+    _trigkitart  AT  %L202.0 : BOOL ; (* Hogy ne állhasson meg a triggerelen, tovább engedem a motort *) 
 END_VAR

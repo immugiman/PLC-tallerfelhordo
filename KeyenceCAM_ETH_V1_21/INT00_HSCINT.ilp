@@ -7,10 +7,12 @@ MOVE    DI#0, %SMD38
 MOVE    I#0, NULLA
 HSC    0
 (* Network 1 *)
+(*PUSH-ok*)
 LD    %SM0.0
 ANDN    %M53.4
 WSFL    NULLA, SZALAGMEMO, 61, 1
 (* Network 2 *)
+(*PUSH-ok*)
 LD    %SM0.0
 AND    %M53.4
 WSFL    ATADO, SZALAGMEMO, 61, 1
@@ -27,6 +29,7 @@ S    %M35.5
 (**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
 LD    %M35.5
 INC    VARAKOZAS
+MOVE    VARAKOZAS, %VB382
 GT    VARAKOZAS, %VB624
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5

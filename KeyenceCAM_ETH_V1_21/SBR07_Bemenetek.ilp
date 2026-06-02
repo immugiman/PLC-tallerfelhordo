@@ -1,11 +1,22 @@
 (*2*)
 (* Network 0 *)
 LD    %I0.4
-AND    %M50.3
+AND(
+LD    %M50.3
+OR    %SM0.0
+)
 ANDN    %M54.2
 R_TRIG
 ST   _IN_TRIG
 (* Network 1 *)
+LD    %I0.4
+R_TRIG
+TOF   T3, 10
+__CR_EQ_1
+MOVE    T3, _t3
+__CR_RESTORE
+ST   _trigkitart
+(* Network 2 *)
 (*Minden második triggerre fotózunk*)
 LD    _IN_TRIG
 AND(
@@ -19,7 +30,7 @@ LD    TRUE
 WSFL    ZEROW, %VW2800, 10, 1
 )
 )
-(* Network 2 *)
+(* Network 3 *)
 (*Trigger jelet 160ms-ig kimaszkolni*)
 LD    _IN_TRIG
 OR(
@@ -27,7 +38,7 @@ LD    %M54.2
 ANDN    T8
 )
 ST   %M54.2
-(* Network 3 *)
+(* Network 4 *)
 (*Trigger és PUSH közti idõkülönbség méréséhez*)
 LD    _IN_TRIG
 R_TRIG
@@ -36,7 +47,7 @@ LD    _tr_to_pu
 ANDN    %M30.3
 )
 ST   _tr_to_pu
-(* Network 4 *)
+(* Network 5 *)
 (*Trigger to PUSH delta T mérése, és kijelzése*)
 LD    _tr_to_pu
 MOVE    _t9, TtoPDelta
@@ -45,11 +56,11 @@ __CR_EQ_1
 MOVE    T9, _t9
 __CR_RESTORE
 ST   %BR0.0
-(* Network 5 *)
+(* Network 6 *)
 LD    _tr_to_pu
 F_TRIG
 MOVE    TtoPDelta, lastTtP
-(* Network 6 *)
+(* Network 7 *)
 (*Trigger mask timer*)
 LD    %M54.2
 TON   T8, 16
@@ -57,13 +68,13 @@ __CR_EQ_1
 MOVE    T8, _t8
 __CR_RESTORE
 ST   %BR0.0
-(* Network 7 *)
+(* Network 8 *)
 (*Ha nem megy a szalag, akkor ne pörgessenHa fitler engedélyezve van, akkor nem fogad ezen idõ alatt újabb jelet.*)
 LD    %I0.5
 AND    %M50.3
 ANDN    _spintrigfiltering
 ST   %M150.0
-(* Network 8 *)
+(* Network 9 *)
 LD    %M150.0
 R_TRIG
 AND    %M201.6
@@ -72,14 +83,14 @@ LD    _spintrigfiltering
 ANDN    T14
 )
 ST   _spintrigfiltering
-(* Network 9 *)
+(* Network 10 *)
 LD    _spintrigfiltering
 TON   T14, spintrgfilter_time
 __CR_EQ_1
 MOVE    T14, _t14
 __CR_RESTORE
 ST   %BR0.0
-(* Network 10 *)
+(* Network 11 *)
 (*Leadás késleltetõ, hogy a csomag biztosan beérkezhessen a spiralok közé*)
 LD    %M150.0
 R_TRIG
@@ -88,14 +99,14 @@ LD    _delay_motstart
 ANDN    T2
 )
 ST   _delay_motstart
-(* Network 11 *)
+(* Network 12 *)
 LD    _delay_motstart
 TON   T2, leadas_delay
 __CR_EQ_1
 MOVE    T2, _t2
 __CR_RESTORE
 ST   %BR0.0
-(* Network 12 *)
+(* Network 13 *)
 (*2-õt  ÁTADNIVALO-ba töltök, hogy elkoszosodott PUSH érzékelõ esetén is adjon le a csomagolónak valamit, hogy ne legyen torlódás3 üres spin után hiba10 érvényes spin után emptyspin csökkentve 1-gyel.*)
 LD    %M150.0
 R_TRIG
@@ -120,51 +131,51 @@ INC    emptyspin
 )
 )
 ST   %M52.0
-(* Network 13 *)
+(* Network 14 *)
 LD    %I0.5
 TON   T7, 10
 __CR_EQ_1
 MOVE    T7, t_spintrig
 __CR_RESTORE
 ST   %M200.7
-(* Network 14 *)
+(* Network 15 *)
 LD    %I0.6
 R_TRIG
 ST   %M30.3
-(* Network 15 *)
+(* Network 16 *)
 LD    %I0.6
 F_TRIG
 ST   %M53.6
-(* Network 16 *)
+(* Network 17 *)
 LD    %M30.3
 OR(
 LD    %M53.5
 ANDN    %M53.6
 )
 ST   %M53.5
-(* Network 17 *)
+(* Network 18 *)
 (*Átfújt tallér megérkezett*)
 LD    %I1.4
 ST   %M36.0
-(* Network 18 *)
+(* Network 19 *)
 LD    %M36.0
 TON   T28, 3
 __CR_EQ_1
 MOVE    T28, t_etalrec
 __CR_RESTORE
 ST   %M36.2
-(* Network 19 *)
+(* Network 20 *)
 (*Egalizáló szalag végén áll egy tallér*)
 LD    %I1.5
 ST   %M36.1
-(* Network 20 *)
+(* Network 21 *)
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
 MOVE    T29, t_etalpos
 __CR_RESTORE
 ST   %M36.3
-(* Network 21 *)
+(* Network 22 *)
 LD    %I2.3
 ANDN    %M40.6
 AND    %M201.1
@@ -173,30 +184,32 @@ LD    %M40.6
 AND    %M201.0
 )
 ANDN    %M400.0
+OR    %M35.5
+OR    _trigkitart
 ST   %M50.3
-(* Network 22 *)
+(* Network 23 *)
 LD    %I2.0
 ANDN    %M40.6
 ST   %M200.0
-(* Network 23 *)
+(* Network 24 *)
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1
-(* Network 24 *)
+(* Network 25 *)
 LDN    %I1.6
 TON   T46, I#10
 __CR_EQ_1
 MOVE    T46, _t46
 __CR_RESTORE
 ST   _blendetelele
-(* Network 25 *)
+(* Network 26 *)
 LD    %I1.6
 TON   T45, I#10
 __CR_EQ_1
 MOVE    T45, _t45
 __CR_RESTORE
 ST   _blendetelefel
-(* Network 26 *)
+(* Network 27 *)
 LD    _blendetelefel
 OR(
 LD    %M40.7

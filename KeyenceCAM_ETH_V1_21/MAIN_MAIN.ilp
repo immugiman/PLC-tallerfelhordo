@@ -220,7 +220,7 @@ OR(
 LDN    %M40.6
 ANDN    %M52.1
 )
-ADD    LEDOBVA, SUMOUT
+ADD    %VW376, %VW340
 OR(
 LD    %M40.6
 AND    %M300.0
@@ -228,14 +228,14 @@ OR(
 LDN    %M40.6
 AND    %M52.1
 )
-ADD    LEDOBVA, BLENDEN
+ADD    %VW376, %VW374
 )
 )
 (* Network 24 *)
 LD    %M52.1
 F_TRIG
 OR    %M40.6
-MOVE    0, BLENDEN
+MOVE    0, %VW374
 (* Network 25 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.4
