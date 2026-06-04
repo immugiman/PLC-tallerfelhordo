@@ -154,28 +154,49 @@ ANDN    %M53.6
 )
 ST   %M53.5
 (* Network 18 *)
+LD    %M30.3
+R_TRIG
+ANDN    %M54.3
+WSFL    _tr_p_time, tr_push_hist, 10, 1
+(* Network 19 *)
+LD    _trig_push_delay
+TON   T0, 180
+__CR_EQ_1
+MOVE    T0, _tr_p_time
+__CR_RESTORE
+ST   %BR0.0
+(* Network 20 *)
+LD    %I0.4
+R_TRIG
+OR(
+LD    _trig_push_delay
+ANDN    %M30.3
+ANDN    T0
+)
+ST   _trig_push_delay
+(* Network 21 *)
 (*Átfújt tallér megérkezett*)
 LD    %I1.4
 ST   %M36.0
-(* Network 19 *)
+(* Network 22 *)
 LD    %M36.0
 TON   T28, 3
 __CR_EQ_1
 MOVE    T28, t_etalrec
 __CR_RESTORE
 ST   %M36.2
-(* Network 20 *)
+(* Network 23 *)
 (*Egalizáló szalag végén áll egy tallér*)
 LD    %I1.5
 ST   %M36.1
-(* Network 21 *)
+(* Network 24 *)
 LD    %M36.1
 TON   T29, 1
 __CR_EQ_1
 MOVE    T29, t_etalpos
 __CR_RESTORE
 ST   %M36.3
-(* Network 22 *)
+(* Network 25 *)
 LD    %I2.3
 ANDN    %M40.6
 AND    %M201.1
@@ -187,29 +208,29 @@ ANDN    %M400.0
 OR    %M35.5
 OR    _trigkitart
 ST   %M50.3
-(* Network 23 *)
+(* Network 26 *)
 LD    %I2.0
 ANDN    %M40.6
 ST   %M200.0
-(* Network 24 *)
+(* Network 27 *)
 LD    %I2.1
 ANDN    %M40.6
 ST   %M52.1
-(* Network 25 *)
+(* Network 28 *)
 LDN    %I1.6
 TON   T46, I#10
 __CR_EQ_1
 MOVE    T46, _t46
 __CR_RESTORE
 ST   _blendetelele
-(* Network 26 *)
+(* Network 29 *)
 LD    %I1.6
 TON   T45, I#10
 __CR_EQ_1
 MOVE    T45, _t45
 __CR_RESTORE
 ST   _blendetelefel
-(* Network 27 *)
+(* Network 30 *)
 LD    _blendetelefel
 OR(
 LD    %M40.7

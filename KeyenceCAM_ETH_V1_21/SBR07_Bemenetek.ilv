@@ -17,4 +17,6 @@ VAR
     _t2  AT  %LW198 : INT ; (*  *) 
     _t3  AT  %LW200 : INT ; (*  *) 
     _trigkitart  AT  %L202.0 : BOOL ; (* Hogy ne állhasson meg a triggerelen, tovább engedem a motort *) 
+    _trig_push_delay  AT  %L202.1 : BOOL ; (* Trigger és push közti eltelt idõ mérése folyamatban *) 
+    _tr_p_time  AT  %LW204 : INT ; (*  *) 
 END_VAR
