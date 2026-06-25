@@ -1,0 +1,3 @@
+VAR
+    pufflen  AT  %LD206 : DWORD ; (*  *) 
+END_VAR

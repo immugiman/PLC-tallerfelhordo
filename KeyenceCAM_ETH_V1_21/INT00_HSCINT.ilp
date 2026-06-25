@@ -28,19 +28,19 @@ S    %M35.5
 (* Network 4 *)
 (**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
 LD    %M35.5
-INC    VARAKOZAS
-MOVE    VARAKOZAS, %VB382
-GT    VARAKOZAS, %VB624
-MOVE    I#0, ÁTADNIVALO
+INC    %LB185
+MOVE    %LB185, %VB382
+GT    %LB185, %VB624
+MOVE    I#0, %VW2750
 R    %M35.5
 (* Network 5 *)
 (*Kilökési pozi betöltése. Ha 8cm-nél kisebb a tallér hossza, akkor a kilökési pontot növelni kell 1cm-rel, hogy akkor is középen érje a légáramlat.*)
 LD    %SM0.0
 MOVE    &VW2600, %VD614
-ADD    kilokes, %VD614
+ADD    %VD610, %VD614
 OR(
 LD    FALSE
-LT    utolsohossz, I#9
+LT    %VW604, I#9
 INC    %VD614
 INC    %VD614
 )
@@ -59,4 +59,4 @@ R_TRIG
 S    %M30.4
 (* Network 7 *)
 LD    %M53.5
-INC    csomhossz
+INC    %VW602

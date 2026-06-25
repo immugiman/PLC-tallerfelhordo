@@ -12,6 +12,13 @@ MOVE    I#0, emptyspin
 ATCH    INT01, 4
 FILL  B#0, %VB2800, B#10
 (* Network 1 *)
+(*Puffer kezdeti értékek*)
+LD    %SM0.1
+MOVE    &VB2600, ptr_puffer
+MOVE    DW#0, index
+MOVE    DW#60, outdex
+MOVE    DW#10, blowdex
+(* Network 2 *)
 LD    %SM0.1
 MOVE    B#0, ZERO
 MOVE    I#0, emptyfifo_cnt
@@ -20,27 +27,27 @@ S    %M201.2
 S    %M201.3
 S    %M201.6
 S    %M201.7
-(* Network 2 *)
+(* Network 3 *)
 (*Bemenetek beolvasása*)
 LD    TRUE
 CAL    SBR07
 CAL    SBR05
 CAL    SBR09
-(* Network 3 *)
+(* Network 4 *)
 (*Kamera SUB-ok hívása*)
 LD    TRUE
 CAL    SBR01    _CAM1RES, _CAM1JNR, _CAM1ONLINE, CAM1ERROR
 CAL    SBR04    CAM2ERROR, _CAM2RES, _CAM2JNR, _CAM2ONLINE
-(* Network 4 *)
+(* Network 5 *)
 (*Egalizáló, és SPIRÁL MOTOR VEZÉRLÉSE*)
 LD    TRUE
 CAL    SBR02
 CAL    SBR06
-(* Network 5 *)
+(* Network 6 *)
 (*Automatikus trigger idõzítõje, a HMI-n beállított ciklusidõvelTeszteléshez*)
 LDN    T5
 TON   T5, %VW30
-(* Network 6 *)
+(* Network 7 *)
 (*Válaszídõ számláló indítása*)
 LD    %I0.3
 AND    %I1.3
@@ -50,7 +57,7 @@ __CR_EQ_1
 MOVE    T1, PROCTimer
 __CR_RESTORE
 ST   %BR0.0
-(* Network 7 *)
+(* Network 8 *)
 (*Trigger feltételek, és fotózás indítása a kamerák trigger bemenetének aktiválása*)
 LD    %I0.3
 AND    %I1.3
@@ -75,7 +82,7 @@ R_TRIG
 R    _CAMTRIGGERED
 ST   _OTRIG
 S    %M20.0
-(* Network 8 *)
+(* Network 9 *)
 (*Trigger kimenet a kamera felé kitartva 10ms-ig*)
 LD    _OTRIG
 TOF   T12, 1
@@ -84,13 +91,13 @@ MOVE    T12, trigkitart
 __CR_RESTORE
 ST   %Q1.0
 ST   %Q1.2
-(* Network 9 *)
+(* Network 10 *)
 (*Ha a kamera leáll valami miatt, akkor az újraindítás utána a COMMTIME törölve lesz, hogy ne ragadjon be a kiértékelés*)
 LD    %I0.3
 AND    %I1.3
 R_TRIG
 R    %M20.0
-(* Network 10 *)
+(* Network 11 *)
 (*Trigger jel kimaszkolása, ha 180ms-on belül érkezne újabbElõzõ trigger óta eltelt idõ mentése regiszterbe*)
 LD    %M20.0
 AND(
@@ -106,20 +113,20 @@ MOVE    Time_TRIG, %VW306
 MUL    W#10, %VW306
 )
 )
-(* Network 11 *)
+(* Network 12 *)
 (*Kamera triggerelés után, amennyiben 100ms-on belül nem vált magasra a BUSY jel,akkor feltételezhetõ, hogy a kamera nem kapta meg a trigger jelet.*)
 LD    %I0.2
 AND    %I1.2
 R_TRIG
 S    %M31.4
-(* Network 12 *)
+(* Network 13 *)
 (*Kamera triggerelés után, amennyiben 100ms-on belül nem vált magasra a BUSY jel,akkor feltételezhetõ, hogy a kamera nem kapta meg a trigger jelet.*)
 LDN    %M31.4
 AND    %M20.0
 GT    PROCTimer, 100
 R_TRIG
 INC    TRIGTOUT
-(* Network 13 *)
+(* Network 14 *)
 (*Triggerek közt eltelt idõ számolása*)
 LDN    %Q1.0
 TON   T6, 1000
@@ -127,7 +134,7 @@ __CR_EQ_1
 MOVE    T6, Time_TRIG
 __CR_RESTORE
 ST   %BR0.0
-(* Network 14 *)
+(* Network 15 *)
 (*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.Network 15, 16, 17, 18 A kamerák eredményeit dolgozzák fel, és a pufferba helyezik sorrendben:1. kamera, 2. kamera*)
 LDN    %M40.0
 NE    _CAM1_LASTNR, _CAM1JNR
@@ -138,7 +145,7 @@ ADD    _CAM1RES, SUMCOUNT
 MOVE    PROCTimer, Time_TOTAL
 R_TRIG
 S    %M31.1
-(* Network 15 *)
+(* Network 16 *)
 (*Ha a kamera kiértékelési sorszáma változott az elõzõhöz képest, akkor mentem az eredményt, és update-elem a sroszámot, process time-ot, valamint az összesítõhöz hozzáadom a db-számot.*)
 LDN    %M40.1
 NE    _CAM2_LASTNR, _CAM2JNR
@@ -149,13 +156,13 @@ ADD    _CAM2RES, SUMCOUNT
 MOVE    PROCTimer, Time_TOTAL
 R_TRIG
 S    %M31.2
-(* Network 16 *)
+(* Network 17 *)
 (*Képalkotási idõ számlálás leállítása*)
 LD    %M31.1
 AND    %M31.2
 R_TRIG
 R    %M20.0
-(* Network 17 *)
+(* Network 18 *)
 (*Ha mindkét kép elkészült, páratlan trigger jel beérkezett, akkor már van 2 hely a pufferben, így beírható a tárolt két eredmény a pufferbe.*)
 LD    %M31.1
 AND    %M31.2
@@ -165,7 +172,7 @@ MOVE    CAM1RES, %VW2802
 MOVE    CAM2RES, %VW2800
 R    %M31.1
 R    %M31.2
-(* Network 18 *)
+(* Network 19 *)
 (*##### ÁTVÉTEL A SÍMA SZALAGRA #####*)
 LD    %M30.3
 R_TRIG
@@ -180,21 +187,21 @@ MOVE    I#0, %VW2804
 )
 )
 S    %M53.4
-(* Network 19 *)
+(* Network 20 *)
 LD    %M53.5
 F_TRIG
 MOVE    csomhossz, utolsohossz
 MOVE    I#0, csomhossz
 GT    utolsohossz, maxhossz
 INC    tulmeretesek
-(* Network 20 *)
+(* Network 21 *)
 (*##### LEDOBÁS SPIRÁLBA #####Itt azt is ellenõrizhetjük, hogy az utolsó elem valóban elérhette az spirál érzékelõjét.*)
 LD    %M52.0
 MOVE    SPIRALON, LEDOBVA
 MOVE    ÁTADNIVALO, SPIRALON
 MOVE    I#0, ÁTADNIVALO
 R    %M35.5
-(* Network 21 *)
+(* Network 22 *)
 (*TESZT üzemmódban, ellenõrizni kell, hogy a kiadott darabszám, plusz a spirálon lévõ mennyiség nagyobb-e mint a megkívánt mennyiség. Ha igen, akkor blende zár.*** bekerült a LEADAS kontakt*)
 LD    FALSE
 AND    %M52.0
@@ -207,11 +214,11 @@ AND    %M300.0
 ANDN    %M200.3
 )
 ST   %M300.0
-(* Network 22 *)
+(* Network 23 *)
 LD    FALSE
 AND    %M300.0
 ST   %M100.3
-(* Network 23 *)
+(* Network 24 *)
 LD    %M52.0
 AND(
 LD    %M40.6
@@ -231,17 +238,17 @@ AND    %M52.1
 ADD    LEDOBVA, BLENDEN
 )
 )
-(* Network 24 *)
+(* Network 25 *)
 LD    %M52.1
 F_TRIG
 OR    %M40.6
 MOVE    0, BLENDEN
-(* Network 25 *)
+(* Network 26 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.4
 R_TRIG
 S    %M30.6
-(* Network 26 *)
+(* Network 27 *)
 (*#### KIFÚJÁS ####*)
 LD    %M30.4
 TON   T30, 4
@@ -249,7 +256,7 @@ __CR_EQ_1
 MOVE    T30, atblowtimer
 __CR_RESTORE
 R    %M30.4
-(* Network 27 *)
+(* Network 28 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
 TON   T24, blowdura
@@ -257,7 +264,7 @@ __CR_EQ_1
 MOVE    T24, blowtimer
 __CR_RESTORE
 R    %M30.6
-(* Network 28 *)
+(* Network 29 *)
 (*Minden nulláz*)
 LD    %M50.5
 R_TRIG
@@ -265,25 +272,25 @@ MOVE    0, SPIRALON
 MOVE    0, BLENDEN
 ST   %M30.1
 S    %M31.6
-(* Network 29 *)
+(* Network 30 *)
 (*Tallér összesítõ nullázása*)
 LD    %M30.1
 MOVE    0, SUMCOUNT
 MOVE    0, SUMOUT
-(* Network 30 *)
+(* Network 31 *)
 LD    %M31.0
 MOVE    0, TRIGTOUT
-(* Network 31 *)
+(* Network 32 *)
 (*PLC Scantime betöltése*)
 LD    %SM0.0
 MOVE    %SMB6, scantime
-(* Network 32 *)
+(* Network 33 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LD    %M50.3
 AND    %M40.2
 R_TRIG
 S    %M50.4
-(* Network 33 *)
+(* Network 34 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LDN    %M50.3
 ORN    %M40.2
@@ -292,13 +299,13 @@ __CR_EQ_1
 MOVE    T39, _t39
 __CR_RESTORE
 ST   %BR0.0
-(* Network 34 *)
+(* Network 35 *)
 (*VIBRAMOTOR indítás/leállítás*)
 LDN    %M40.6
 AND    T39
 R_TRIG
 R    %M50.4
-(* Network 35 *)
+(* Network 36 *)
 (*Idõszakos homing-olás*)
 LDN    %M30.3
 TON   T44, 10
@@ -306,7 +313,7 @@ __CR_EQ_1
 MOVE    T44, _t44
 __CR_RESTORE
 ST   %BR0.0
-(* Network 36 *)
+(* Network 37 *)
 (*Idõszakos homing-olás*)
 LD    %M201.2
 AND    %M50.3
@@ -316,7 +323,7 @@ __CR_EQ_1
 MOVE    T41, _t41
 __CR_RESTORE
 ST   %M54.0
-(* Network 37 *)
+(* Network 38 *)
 (*Idõszakos homing-olás*)
 LD    %M54.0
 AND    T44
@@ -326,12 +333,12 @@ LD    _homing
 ANDN    T43
 )
 ST   _homing
-(* Network 38 *)
+(* Network 39 *)
 (*Idõszakos homing-olás*)
 LD    _homing
 R_TRIG
 ST   %M53.7
-(* Network 39 *)
+(* Network 40 *)
 (*Idõszakos homing-olásHoming generál egy leadást*)
 LD    _homing
 TON   T42, 5
@@ -344,11 +351,11 @@ LD    %M54.1
 ANDN    T43
 )
 ST   %M54.1
-(* Network 40 *)
+(* Network 41 *)
 LD    %M54.1
 OR    %M50.5
 MOVE    0, SPIRALON
-(* Network 41 *)
+(* Network 42 *)
 (*Spirálból sumout-ba, vagy belndébe kerül a spirálon lévõ tallérszám, nullázás és homing következtében.*)
 LD    %M54.1
 TON   T43, 1
@@ -364,10 +371,10 @@ LD    %M52.1
 ADD    SPIRALON, BLENDEN
 )
 )
-(* Network 42 *)
+(* Network 43 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08
-(* Network 43 *)
+(* Network 44 *)
 LD    %M201.4
 MOVE    I#0, emptyspin

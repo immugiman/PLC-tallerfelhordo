@@ -1,0 +1,78 @@
+(*2*)
+(* Network 0 *)
+(*HSC_PULSE a 10mm-eket számlálja.VW2700-ba pakolja a spirálba fogadásra váró csomag darabszámát.5  megszakításig várakozik, majd nullázza a VW2700-at, és a HIANYZO bitet magasra állítja.*)
+LD    %SM0.0
+MOVE    B#16#C0, %SMB37
+MOVE    DI#0, %SMD38
+MOVE    I#0, %LW112
+HSC    0
+(* Network 1 *)
+(*Buffer betöltési mutató számítása*)
+LD    %SM0.0
+MOVE    index, ptr_inpuff
+ADD    ptr_puffer, ptr_inpuff
+MOVE    outdex, ptr_outpuff
+ADD    ptr_puffer, ptr_outpuff
+MOVE    blowdex, ptr_blowpuff
+ADD    ptr_puffer, ptr_blowpuff
+(* Network 2 *)
+(*PUSH-ok*)
+LD    %SM0.0
+ANDN    %M53.4
+MOVE    0, *VD5032
+(* Network 3 *)
+(*PUSH-ok*)
+LD    %SM0.0
+AND    %M53.4
+MOVE    ATADO, *VD5032
+R    %M53.4
+(* Network 4 *)
+(*Utolsó pozícióban lévõ elem kilvasása, és 2720-ba helyezése. Spirálba átadásra vár*)
+LD    %SM0.0
+GT    *VD5036, I#0
+MOVE    *VD5036, ÁTADNIVALO
+MOVE    W#0, *VD5036
+MOVE    B#0, %LB185
+S    %M35.5
+(* Network 5 *)
+(**** Bekerült a végére, hogy VARATVETELRE törlés,. és a SET HIANYZO  kikerült onnan, mert nem használom*)
+LD    %M35.5
+INC    %LB185
+MOVE    %LB185, %VB382
+GT    %LB185, %VB624
+MOVE    I#0, ÁTADNIVALO
+R    %M35.5
+(* Network 6 *)
+(*Kilökési pozi betöltése. Ha 8cm-nél kisebb a tallér hossza, akkor a kilökési pontot növelni kell 1cm-rel, hogy akkor is középen érje a légáramlat.*)
+LD    %SM0.0
+MOVE    &VW2600, %VD614
+ADD    kilokes, %VD614
+OR(
+LD    FALSE
+LT    utolsohossz, I#9
+INC    %VD614
+INC    %VD614
+)
+(* Network 7 *)
+(*Pozi növelése, és ha kifúvási pozícióba kerül, akkor flag állítása*)
+LD    %SM0.0
+AND    %M30.5
+EQ    *VD5040, I#1
+R_TRIG
+S    %M30.4
+(* Network 8 *)
+LD    %M53.5
+INC    csomhossz
+(* Network 9 *)
+(*index növelése 2-vel (word hosszú egy adat)*)
+LD    %SM0.0
+ADD    DW#2, index
+ADD    DW#2, outdex
+ADD    DW#2, blowdex
+(* Network 10 *)
+(*Inkrementálás után a 60-nál magasabb érték 0-ra vált*)
+LD    %SM0.0
+MOVE    DW#60, pufflen
+MOD    pufflen, index
+MOD    pufflen, outdex
+MOD    pufflen, blowdex
