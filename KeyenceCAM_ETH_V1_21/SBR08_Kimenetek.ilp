@@ -16,18 +16,14 @@ ST   %Q0.2
 LD    %M100.2
 ST   %Q0.3
 (* Network 5 *)
-(*Szalagrendszer saját blende kimenete teszteléshez*)
-LD    %M100.3
-ST   %Q0.4
-(* Network 6 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.6
 ST   %Q1.1
-(* Network 7 *)
+(* Network 6 *)
 (*Csomagoló felé*)
 LD    %M40.2
 ST   %Q3.7
-(* Network 8 *)
+(* Network 7 *)
 (*LEADAS jel kitartása 100ms*)
 LD    %M52.0
 OR    %M50.5
@@ -40,7 +36,7 @@ __CR_EQ_1
 MOVE    T40, _t40
 __CR_RESTORE
 ST   %Q1.3
-(* Network 9 *)
+(* Network 8 *)
 (*0db Csomagológépnek bitek átadása*)
 LD    TRUE
 EQ    SPIRALON, I#0
@@ -48,7 +44,7 @@ R_TRIG
 R    %M40.3
 R    %M40.4
 R    %M40.5
-(* Network 10 *)
+(* Network 9 *)
 (*1db Csomagológépnek bitek átadása*)
 LD    TRUE
 EQ    SPIRALON, I#1
@@ -56,7 +52,7 @@ R_TRIG
 S    %M40.3
 R    %M40.4
 R    %M40.5
-(* Network 11 *)
+(* Network 10 *)
 (*2db Csomagológépnek bitek átadása*)
 LD    TRUE
 EQ    SPIRALON, I#2
@@ -64,7 +60,7 @@ R_TRIG
 R    %M40.3
 S    %M40.4
 R    %M40.5
-(* Network 12 *)
+(* Network 11 *)
 (*3db Csomagológépnek bitek átadása*)
 LD    TRUE
 EQ    SPIRALON, I#3
@@ -72,7 +68,7 @@ R_TRIG
 R    %M40.3
 R    %M40.4
 S    %M40.5
-(* Network 13 *)
+(* Network 12 *)
 (*>4db Csomagológépnek bitek átadása*)
 LD    TRUE
 GE    SPIRALON, I#4
@@ -80,12 +76,12 @@ R_TRIG
 S    %M40.3
 S    %M40.4
 S    %M40.5
-(* Network 14 *)
+(* Network 13 *)
 LD    %M40.3
 ST   %Q1.4
-(* Network 15 *)
+(* Network 14 *)
 LD    %M40.4
 ST   %Q1.5
-(* Network 16 *)
+(* Network 15 *)
 LD    %M40.5
 ST   %Q1.6

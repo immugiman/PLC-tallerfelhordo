@@ -220,7 +220,7 @@ OR(
 LDN    %M40.6
 ANDN    %M52.1
 )
-ADD    %VW376, %VW340
+ADD    LEDOBVA, SUMOUT
 OR(
 LD    %M40.6
 AND    %M300.0
@@ -228,14 +228,14 @@ OR(
 LDN    %M40.6
 AND    %M52.1
 )
-ADD    %VW376, %VW374
+ADD    LEDOBVA, BLENDEN
 )
 )
 (* Network 24 *)
 LD    %M52.1
 F_TRIG
 OR    %M40.6
-MOVE    0, %VW374
+MOVE    0, BLENDEN
 (* Network 25 *)
 (*#### KIFÚJÁS ####1 db-os tallér csomag kifújása egalizátorhoz*)
 LD    %M30.4
@@ -345,6 +345,10 @@ ANDN    T43
 )
 ST   %M54.1
 (* Network 40 *)
+LD    %M54.1
+OR    %M50.5
+MOVE    0, SPIRALON
+(* Network 41 *)
 (*Spirálból sumout-ba, vagy belndébe kerül a spirálon lévõ tallérszám, nullázás és homing következtében.*)
 LD    %M54.1
 TON   T43, 1
@@ -360,11 +364,10 @@ LD    %M52.1
 ADD    SPIRALON, BLENDEN
 )
 )
-MOVE    0, SPIRALON
-(* Network 41 *)
+(* Network 42 *)
 LD    TRUE
 CAL    SBR10
 CAL    SBR08
-(* Network 42 *)
+(* Network 43 *)
 LD    %M201.4
 MOVE    I#0, emptyspin

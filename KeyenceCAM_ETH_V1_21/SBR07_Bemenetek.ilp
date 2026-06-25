@@ -9,6 +9,7 @@ ANDN    %M54.2
 R_TRIG
 ST   _IN_TRIG
 (* Network 1 *)
+(*_trigkitart feladata, hogy a trigger jelrõl biztosan lelépjen a szalag mikor megáll.Így elkerülhetõ, hogy a trigger érzékelõ elõtt a vibráló szalag billegõ jelet adjon.*)
 LD    %I0.4
 R_TRIG
 TOF   T3, 10

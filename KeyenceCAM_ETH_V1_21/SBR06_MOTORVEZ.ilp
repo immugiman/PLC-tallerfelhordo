@@ -8,6 +8,7 @@ S    %M31.6
 (* Network 1 *)
 LD    TRUE
 PREL    0, MOTSTART, %VW250, %VD252, %VW256, %VD258, %M31.7, %M32.1, %MB33
+PREL    1, MOTSTART, %VW250, %VD252, %VW256, %VD262, %M32.3, %M32.4, %MB34
 R    %M31.6
 (* Network 2 *)
 (*Automata pörgetés teszteléshez, HMI-rõl aktiválva*)
@@ -41,8 +42,10 @@ ST   IN_homing
 (* Network 5 *)
 LD    IN_homing
 R_TRIG
-R    DONE
-R    DONE2
+R    DONE0
+R    DONE02
+R    DONE1
+R    DONE12
 (* Network 6 *)
 (*HOME pozíció keresése*)
 LD    IN_homing
@@ -52,7 +55,8 @@ ST   IN_findhome
 (*HOME pozíció keresése*)
 LD    IN_homing
 AND    IN_findhome
-AND    DONE
+AND    DONE0
+AND    DONE1
 R_TRIG
 OR(
 LD    IN_homing
@@ -69,7 +73,8 @@ ST   IN_jogtoorigin
 (*HOME->ORIGIN*)
 LD    IN_homing
 AND    IN_jogtoorigin
-AND    DONE2
+AND    DONE02
+AND    DONE12
 R_TRIG
 OR(
 LD    IN_homing
@@ -77,18 +82,25 @@ AND    FIN_jogtoorigin
 )
 ST   FIN_jogtoorigin
 (* Network 10 *)
+LD    %I1.0
+R_TRIG
+ST   HOMET0
+(* Network 11 *)
+(*IDE kell választani egy bemenetet, ahova beérkezik a második motor nullpont érzékelõje*)
 LD    %I0.7
 R_TRIG
-ST   HOMET
-(* Network 11 *)
+ST   HOMET1
+(* Network 12 *)
 (*Nullpont keresés spirál motor*)
 LD    TRUE
-PHOME    0, IN_findhome, HOMET, HOMET, I#1, I#0, W#200, DW#1000, W#50, DONE, ERR, ERRID
-(* Network 12 *)
+PHOME    0, IN_findhome, HOMET0, HOMET0, I#1, I#1, W#200, DW#1000, W#50, DONE0, ERR, ERRID
+PHOME    1, IN_findhome, HOMET1, HOMET1, I#1, I#1, W#200, DW#1000, W#50, DONE1, ERR, ERRID
+(* Network 13 *)
 (*kezdõ pozíció felvétele a nullponttól számítva negyed fordulat*)
 LD    TRUE
-PREL    0, IN_jogtoorigin, W#200, DW#1000, W#500, DI#50, DONE2, ERR2, ERRID2
-(* Network 13 *)
-(*Egalizáló tallér szállító szalag*)
+PREL    0, IN_jogtoorigin, W#200, DW#1000, W#500, DI#35, DONE02, ERR2, ERRID2
+PREL    1, IN_jogtoorigin, W#200, DW#1000, W#500, DI#35, DONE12, ERR2, ERRID2
+(* Network 14 *)
+(*Egalizáló tallér szállító szalagAxis 2 -> Q0.4 kimenetre*)
 LD    TRUE
-PJOG    1, motor2, DW#600, I#0, DONE3, ERR3, ERRID3
+PJOG    2, motor2, DW#600, I#0, DONE3, ERR3, ERRID3

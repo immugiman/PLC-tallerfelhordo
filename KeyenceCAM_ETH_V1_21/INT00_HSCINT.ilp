@@ -18,7 +18,7 @@ AND    %M53.4
 WSFL    ATADO, SZALAGMEMO, 61, 1
 R    %M53.4
 (* Network 3 *)
-(*Spirálba átadásra vár*)
+(*Utolsó pozícióban lévõ elem kilvasása, és 2720-ba helyezése. Spirálba átadásra vár*)
 LD    %SM0.0
 GT    %VW2720, I#0
 MOVE    %VW2720, ÁTADNIVALO
