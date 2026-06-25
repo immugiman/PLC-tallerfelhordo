@@ -16,6 +16,9 @@ LD    %M200.7
 OR    %M40.7
 ST   %M400.0
 (* Network 2 *)
-LD TRUE
+LD    TRUE
 GT    emptyspin, I#3
 ST   %M201.5
+(* Network 3 *)
+LD    %SM0.0
+ST   %BR0.0
