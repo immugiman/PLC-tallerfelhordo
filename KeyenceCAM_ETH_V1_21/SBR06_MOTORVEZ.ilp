@@ -99,7 +99,7 @@ PHOME    1, IN_findhome, HOMET1, HOMET1, I#1, I#1, W#200, DW#1000, W#50, DONE1, 
 (*kezdõ pozíció felvétele a nullponttól számítva negyed fordulat*)
 LD    TRUE
 PREL    0, IN_jogtoorigin, %VW266, %VD268, %VW272, %VD274, DONE02, ERR2, ERRID2
-PREL    1, IN_jogtoorigin, %VW266, %VD26, %VW2772, %VD274, DONE12, ERR2, ERRID2
+PREL    1, IN_jogtoorigin, %VW266, %VD268, %VW272, %VD274, DONE12, ERR2, ERRID2
 (* Network 14 *)
 (*Egalizáló tallér szállító szalagAxis 2 -> Q0.4 kimenetre*)
 LD    TRUE

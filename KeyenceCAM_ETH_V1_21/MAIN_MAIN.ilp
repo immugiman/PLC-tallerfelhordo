@@ -327,6 +327,7 @@ ST   %M54.0
 (*Idõszakos homing-olás*)
 LD    %M54.0
 AND    T44
+OR    %M54.4
 R_TRIG
 OR(
 LD    _homing
